@@ -8,8 +8,7 @@ import {
   OnInit,
   OnDestroy,
   LOCALE_ID,
-  Inject,
-  TemplateRef
+  Inject
 } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
@@ -44,7 +43,6 @@ import { CalendarEventTimesChangedEvent } from '../../interfaces/calendarEventTi
       <mwl-calendar-week-view-header
         [days]="days"
         [locale]="locale"
-        [customTemplate]="headerTemplate"
         (dayClicked)="dayClicked.emit($event)"
         (eventDropped)="eventTimesChanged.emit($event)">
       </mwl-calendar-week-view-header>
@@ -115,11 +113,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    * The start number of the week
    */
   @Input() weekStartsOn: number;
-
-  /**
-   * A custom template to use to replace the header
-   */
-  @Input() headerTemplate: TemplateRef<any>;
 
   /**
    * Called when a header week day is clicked
