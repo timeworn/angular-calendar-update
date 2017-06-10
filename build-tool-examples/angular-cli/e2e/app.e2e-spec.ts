@@ -1,6 +1,6 @@
 import { AngularCliPage } from './app.po';
 
-describe('angular-cli App', () => {
+describe('angular-cli App', function() {
   let page: AngularCliPage;
 
   beforeEach(() => {
