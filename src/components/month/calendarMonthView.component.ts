@@ -148,11 +148,6 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
   @Input() openDayEventsTemplate: TemplateRef<any>;
 
   /**
-   * An array of day indexes (0 = sunday, 1 = monday etc) that indicate which days are weekends
-   */
-  @Input() weekendDays: number[];
-
-  /**
    * Called when the day cell is clicked
    */
   @Output() dayClicked: EventEmitter<{day: MonthViewDay}> = new EventEmitter<{day: MonthViewDay}>();
@@ -216,11 +211,11 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
    */
   ngOnChanges(changes: any): void {
 
-    if (changes.viewDate || changes.excludeDays || changes.weekendDays) {
+    if (changes.viewDate || changes.excludeDays) {
       this.refreshHeader();
     }
 
-    if (changes.viewDate || changes.events || changes.excludeDays || changes.weekendDays) {
+    if (changes.viewDate || changes.events || changes.excludeDays) {
       this.refreshBody();
     }
 
@@ -271,8 +266,7 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
     this.columnHeaders = this.utils.getWeekViewHeader({
       viewDate: this.viewDate,
       weekStartsOn: this.weekStartsOn,
-      excluded: this.excludeDays,
-      weekendDays: this.weekendDays
+      excluded: this.excludeDays
     });
   }
 
@@ -281,8 +275,7 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
       events: this.events,
       viewDate: this.viewDate,
       weekStartsOn: this.weekStartsOn,
-      excluded: this.excludeDays,
-      weekendDays: this.weekendDays
+      excluded: this.excludeDays
     });
     if (this.dayModifier) {
       this.view.days.forEach(day => this.dayModifier(day));

@@ -148,11 +148,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
   @Input() allowDragOutside: boolean = false;
 
   /**
-   * An array of day indexes (0 = sunday, 1 = monday etc) that indicate which days are weekends
-   */
-  @Input() weekendDays: number[];
-
-  /**
    * Called when a header week day is clicked
    */
   @Output() dayClicked: EventEmitter<{date: Date}> = new EventEmitter<{date: Date}>();
@@ -221,7 +216,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    */
   ngOnChanges(changes: any): void {
 
-    if (changes.viewDate || changes.excludeDays || changes.weekendDays) {
+    if (changes.viewDate || changes.excludeDays) {
       this.refreshHeader();
     }
 
@@ -354,8 +349,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
     this.days = this.utils.getWeekViewHeader({
       viewDate: this.viewDate,
       weekStartsOn: this.weekStartsOn,
-      excluded: this.excludeDays,
-      weekendDays: this.weekendDays
+      excluded: this.excludeDays
     });
   }
 

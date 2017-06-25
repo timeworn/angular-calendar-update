@@ -16,8 +16,7 @@ import {
   CalendarDateFormatter,
   CalendarModule,
   MOMENT,
-  CalendarMonthViewDay,
-  DAYS_OF_WEEK
+  CalendarMonthViewDay
 } from './../src';
 import { CalendarMonthViewComponent } from './../src/components/month/calendarMonthView.component';
 import { Subject } from 'rxjs/Subject';
@@ -524,25 +523,6 @@ describe('calendarMonthView component', () => {
     expect(headerCells[0].classList.contains('cal-future')).to.equal(false);
     expect(headerCells[0].classList.contains('cal-weekend')).to.equal(true);
     expect(headerCells[1].classList.contains('cal-weekend')).to.equal(false);
-    expect(headerCells[6].classList.contains('cal-weekend')).to.equal(true);
-    fixture.destroy();
-  });
-
-  it('should allow the weekend days to be customised', () => {
-    const fixture: ComponentFixture<CalendarMonthViewComponent> = TestBed.createComponent(CalendarMonthViewComponent);
-    fixture.componentInstance.viewDate = new Date('2017-06-25');
-    fixture.componentInstance.weekendDays = [
-      DAYS_OF_WEEK.FRIDAY,
-      DAYS_OF_WEEK.SATURDAY
-    ];
-    fixture.componentInstance.ngOnChanges({viewDate: {}, weekendDays: {}});
-    fixture.detectChanges();
-    expect(fixture.componentInstance.view.days[0].isWeekend).to.equal(false);
-    expect(fixture.componentInstance.view.days[5].isWeekend).to.equal(true);
-    expect(fixture.componentInstance.view.days[6].isWeekend).to.equal(true);
-    const headerCells: HTMLElement[] = fixture.nativeElement.querySelectorAll('.cal-header .cal-cell');
-    expect(headerCells[0].classList.contains('cal-weekend')).to.equal(false);
-    expect(headerCells[5].classList.contains('cal-weekend')).to.equal(true);
     expect(headerCells[6].classList.contains('cal-weekend')).to.equal(true);
     fixture.destroy();
   });

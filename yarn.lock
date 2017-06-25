@@ -825,9 +825,9 @@ cachedir@^1.1.0:
   dependencies:
     os-homedir "^1.0.1"
 
-calendar-utils@0.0.54:
-  version "0.0.54"
-  resolved "https://registry.yarnpkg.com/calendar-utils/-/calendar-utils-0.0.54.tgz#deb7a2d53711bd86c10a58a1e96bb733d7b61f9b"
+calendar-utils@0.0.53:
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/calendar-utils/-/calendar-utils-0.0.53.tgz#64284dfc2d01d8e58d672ab0d8fb13ba38bb6f88"
 
 callsite@1.0.0:
   version "1.0.0"
@@ -6459,13 +6459,9 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@2.3.4:
+typescript@2.3.4, typescript@~2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.3.4.tgz#3d38321828231e434f287514959c37a82b629f42"
-
-typescript@^2.3.4:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.0.tgz#aef5a8d404beba36ad339abf079ddddfffba86dd"
 
 uglify-js@3.0.x:
   version "3.0.20"
