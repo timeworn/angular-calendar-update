@@ -19,8 +19,6 @@ import { MonthViewDay, CalendarEvent } from 'calendar-utils';
           (mouseleave)="unhighlightDay.emit({event: event})"
           [mwlCalendarTooltip]="event.title | calendarEventTitle:'monthTooltip':event"
           [tooltipPlacement]="tooltipPlacement"
-          [tooltipEvent]="event"
-          [tooltipTemplate]="tooltipTemplate"
           mwlDraggable
           [dropData]="{event: event}"
           [dragAxis]="{x: event.draggable, y: event.draggable}"
@@ -65,8 +63,6 @@ export class CalendarMonthCellComponent {
   @Input() tooltipPlacement: string;
 
   @Input() customTemplate: TemplateRef<any>;
-
-  @Input() tooltipTemplate: TemplateRef<any>;
 
   @Output() highlightDay: EventEmitter<any> = new EventEmitter();
 
