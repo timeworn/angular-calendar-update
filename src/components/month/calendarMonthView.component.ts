@@ -61,6 +61,7 @@ import { CalendarUtils } from '../../providers/calendarUtils.provider';
               [openDay]="openDay"
               [locale]="locale"
               [tooltipPlacement]="tooltipPlacement"
+              [tooltipTemplate]="tooltipTemplate"
               [customTemplate]="cellTemplate"
               (click)="dayClicked.emit({day: day})"
               (highlightDay)="toggleDayHighlight($event.event, true)"
@@ -128,6 +129,11 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
   @Input() tooltipPlacement: string = 'top';
 
   /**
+   * A custom template to use for the event tooltips
+   */
+  @Input() tooltipTemplate: TemplateRef<any>;
+
+  /**
    * The start number of the week
    */
   @Input() weekStartsOn: number;
@@ -146,6 +152,11 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
    * A custom template to use for the slide down box of events for the active day
    */
   @Input() openDayEventsTemplate: TemplateRef<any>;
+
+  /**
+   * An array of day indexes (0 = sunday, 1 = monday etc) that indicate which days are weekends
+   */
+  @Input() weekendDays: number[];
 
   /**
    * Called when the day cell is clicked
@@ -211,11 +222,11 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
    */
   ngOnChanges(changes: any): void {
 
-    if (changes.viewDate || changes.excludeDays) {
+    if (changes.viewDate || changes.excludeDays || changes.weekendDays) {
       this.refreshHeader();
     }
 
-    if (changes.viewDate || changes.events || changes.excludeDays) {
+    if (changes.viewDate || changes.events || changes.excludeDays || changes.weekendDays) {
       this.refreshBody();
     }
 
@@ -266,7 +277,8 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
     this.columnHeaders = this.utils.getWeekViewHeader({
       viewDate: this.viewDate,
       weekStartsOn: this.weekStartsOn,
-      excluded: this.excludeDays
+      excluded: this.excludeDays,
+      weekendDays: this.weekendDays
     });
   }
 
@@ -275,7 +287,8 @@ export class CalendarMonthViewComponent implements OnChanges, OnInit, OnDestroy 
       events: this.events,
       viewDate: this.viewDate,
       weekStartsOn: this.weekStartsOn,
-      excluded: this.excludeDays
+      excluded: this.excludeDays,
+      weekendDays: this.weekendDays
     });
     if (this.dayModifier) {
       this.view.days.forEach(day => this.dayModifier(day));
