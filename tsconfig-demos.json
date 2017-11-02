@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "esnext",
-    "outDir": "./dist/aot",
+    "outDir": "./dist/esm",
     "baseUrl": "",
     "emitDecoratorMetadata": false
   },

@@ -10,7 +10,6 @@ import { DayViewHourSegment } from 'calendar-utils';
       let-locale="locale">
       <div
         class="cal-hour-segment"
-        [style.height.px]="segmentHeight"
         [class.cal-hour-start]="segment.isStart"
         [class.cal-after-hour-start]="!segment.isStart"
         [ngClass]="segment.cssClass">
@@ -30,8 +29,6 @@ import { DayViewHourSegment } from 'calendar-utils';
 })
 export class CalendarDayViewHourSegmentComponent {
   @Input() segment: DayViewHourSegment;
-
-  @Input() segmentHeight: number;
 
   @Input() locale: string;
 

@@ -4,7 +4,7 @@
     "module": "es2015",
     "declaration": true,
     "stripInternal": true,
-    "outDir": "./dist",
+    "outDir": "./dist/esm",
     "types": [],
     "emitDecoratorMetadata": false,
     "baseUrl": "",
@@ -20,7 +20,7 @@
   ],
   "angularCompilerOptions": {
     "strictMetadataEmit": true,
-    "genDir": "./dist",
+    "genDir": "./dist/esm",
     "skipTemplateCodegen": true,
     "trace": true
   }
