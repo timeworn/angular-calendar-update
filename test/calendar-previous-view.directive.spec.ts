@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { expect } from 'chai';
-import { CalendarModule, DateAdapter } from '../src';
-import { adapterFactory } from '../src/date-adapters/date-fns';
+import { CalendarModule } from '../src';
 
 @Component({
   template:
@@ -16,12 +15,7 @@ class TestComponent {
 describe('calendarPreviousView directive', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CalendarModule.forRoot({
-          provide: DateAdapter,
-          useFactory: adapterFactory
-        })
-      ],
+      imports: [CalendarModule.forRoot()],
       declarations: [TestComponent]
     });
   });

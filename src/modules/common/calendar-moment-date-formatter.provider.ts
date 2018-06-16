@@ -74,7 +74,7 @@ export class CalendarMomentDateFormatter
   }: DateFormatterParams): string {
     return this.moment(date)
       .locale(locale)
-      .format('MMM D');
+      .format('D MMM');
   }
 
   /**

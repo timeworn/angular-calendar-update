@@ -20,12 +20,12 @@ import {
   ViewPeriod
 } from 'calendar-utils';
 import { ResizeEvent } from 'angular-resizable-element';
+import addDays from 'date-fns/add_days/index';
 import { CalendarDragHelper } from '../common/calendar-drag-helper.provider';
 import { CalendarResizeHelper } from '../common/calendar-resize-helper.provider';
 import { CalendarEventTimesChangedEvent } from '../common/calendar-event-times-changed-event.interface';
 import { CalendarUtils } from '../common/calendar-utils.provider';
 import { validateEvents, trackByIndex } from '../common/util';
-import { DateAdapter } from '../../date-adapters/date-adapter';
 
 export interface WeekViewEventResize {
   originalOffset: number;
@@ -253,8 +253,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
   constructor(
     private cdr: ChangeDetectorRef,
     private utils: CalendarUtils,
-    @Inject(LOCALE_ID) locale: string,
-    private dateAdapter: DateAdapter
+    @Inject(LOCALE_ID) locale: string
   ) {
     this.locale = locale;
   }
@@ -363,9 +362,9 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
     let newStart: Date = weekEvent.event.start;
     let newEnd: Date = weekEvent.event.end;
     if (currentResize.edge === 'left') {
-      newStart = this.dateAdapter.addDays(newStart, daysDiff);
+      newStart = addDays(newStart, daysDiff);
     } else if (newEnd) {
-      newEnd = this.dateAdapter.addDays(newEnd, daysDiff);
+      newEnd = addDays(newEnd, daysDiff);
     }
 
     this.eventTimesChanged.emit({ newStart, newEnd, event: weekEvent.event });
@@ -381,13 +380,10 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
     dayWidth: number
   ): void {
     const daysDragged: number = draggedByPx / dayWidth;
-    const newStart: Date = this.dateAdapter.addDays(
-      weekEvent.event.start,
-      daysDragged
-    );
+    const newStart: Date = addDays(weekEvent.event.start, daysDragged);
     let newEnd: Date;
     if (weekEvent.event.end) {
-      newEnd = this.dateAdapter.addDays(weekEvent.event.end, daysDragged);
+      newEnd = addDays(weekEvent.event.end, daysDragged);
     }
 
     this.eventTimesChanged.emit({ newStart, newEnd, event: weekEvent.event });

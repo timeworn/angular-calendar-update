@@ -9,20 +9,13 @@ import {
   CalendarMonthViewComponent,
   CalendarWeekViewComponent,
   CalendarDayViewComponent,
-  MOMENT,
-  DateAdapter
-} from '../src';
-import { adapterFactory } from '../src/date-adapters/date-fns';
+  MOMENT
+} from './../src';
 
 describe('common module', () => {
   it('should not require providers to be specified when using CalendarCommonModule.forRoot()', () => {
     TestBed.configureTestingModule({
-      imports: [
-        CalendarCommonModule.forRoot({
-          provide: DateAdapter,
-          useFactory: adapterFactory
-        })
-      ]
+      imports: [CalendarCommonModule.forRoot()]
     });
     const dateFormatter: CalendarDateFormatter = TestBed.get(
       CalendarDateFormatter
@@ -33,18 +26,12 @@ describe('common module', () => {
   it('should allow the date formatter to be customsied via the forRoot method', () => {
     TestBed.configureTestingModule({
       imports: [
-        CalendarCommonModule.forRoot(
-          {
-            provide: DateAdapter,
-            useFactory: adapterFactory
-          },
-          {
-            dateFormatter: {
-              provide: CalendarDateFormatter,
-              useClass: CalendarMomentDateFormatter
-            }
+        CalendarCommonModule.forRoot({
+          dateFormatter: {
+            provide: CalendarDateFormatter,
+            useClass: CalendarMomentDateFormatter
           }
-        )
+        })
       ],
       providers: [{ provide: MOMENT, useValue: moment }]
     });
@@ -57,13 +44,7 @@ describe('common module', () => {
 
   it('should allow just the month view to be created', () => {
     TestBed.configureTestingModule({
-      imports: [
-        CalendarCommonModule.forRoot({
-          provide: DateAdapter,
-          useFactory: adapterFactory
-        }),
-        CalendarMonthModule
-      ]
+      imports: [CalendarCommonModule.forRoot(), CalendarMonthModule]
     });
     expect(() =>
       TestBed.createComponent(CalendarMonthViewComponent)

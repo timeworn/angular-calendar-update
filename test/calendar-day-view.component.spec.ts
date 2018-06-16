@@ -18,31 +18,23 @@ import {
   CalendarModule,
   MOMENT,
   CalendarEventTimesChangedEvent,
-  CalendarDayViewComponent,
-  DateAdapter
-} from '../src';
+  CalendarDayViewComponent
+} from './../src';
 import { Subject } from 'rxjs';
 import { spy } from 'sinon';
 import { triggerDomEvent, ExternalEventComponent } from './util';
 import { take } from 'rxjs/operators';
-import { adapterFactory } from '../src/date-adapters/date-fns';
 
 describe('CalendarDayViewComponent component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        CalendarModule.forRoot(
-          {
-            provide: DateAdapter,
-            useFactory: adapterFactory
-          },
-          {
-            dateFormatter: {
-              provide: CalendarDateFormatter,
-              useClass: CalendarMomentDateFormatter
-            }
+        CalendarModule.forRoot({
+          dateFormatter: {
+            provide: CalendarDateFormatter,
+            useClass: CalendarMomentDateFormatter
           }
-        ),
+        }),
         DragAndDropModule
       ],
       declarations: [ExternalEventComponent],
@@ -51,9 +43,11 @@ describe('CalendarDayViewComponent component', () => {
   });
 
   let eventTitle: CalendarEventTitleFormatter;
-  beforeEach(inject([CalendarEventTitleFormatter], _eventTitle_ => {
-    eventTitle = _eventTitle_;
-  }));
+  beforeEach(
+    inject([CalendarEventTitleFormatter], _eventTitle_ => {
+      eventTitle = _eventTitle_;
+    })
+  );
 
   it('should generate the day view', () => {
     const fixture: ComponentFixture<
@@ -651,7 +645,7 @@ describe('CalendarDayViewComponent component', () => {
     fixture.detectChanges();
     document.body.appendChild(fixture.nativeElement);
     const event: HTMLElement = fixture.nativeElement.querySelector(
-      '.cal-event-container'
+      '.cal-event'
     );
     const eventPosition: ClientRect = event.getBoundingClientRect();
     let dragEvent: CalendarEventTimesChangedEvent;
@@ -668,11 +662,8 @@ describe('CalendarDayViewComponent component', () => {
       clientX: eventPosition.left + 10
     });
     fixture.detectChanges();
-    const ghostElement = event.nextSibling as HTMLElement;
-    expect(ghostElement.getBoundingClientRect().top).to.equal(
-      eventPosition.top + 30
-    );
-    expect(ghostElement.getBoundingClientRect().bottom).to.equal(
+    expect(event.getBoundingClientRect().top).to.equal(eventPosition.top + 30);
+    expect(event.getBoundingClientRect().bottom).to.equal(
       eventPosition.bottom + 30
     );
     triggerDomEvent('mouseup', document.body, {
@@ -719,7 +710,7 @@ describe('CalendarDayViewComponent component', () => {
     fixture.detectChanges();
     document.body.appendChild(fixture.nativeElement);
     const event: HTMLElement = fixture.nativeElement.querySelector(
-      '.cal-event-container'
+      '.cal-event'
     );
     const eventPosition: ClientRect = event.getBoundingClientRect();
     const calendarPosition: ClientRect = fixture.nativeElement.getBoundingClientRect();
@@ -733,11 +724,8 @@ describe('CalendarDayViewComponent component', () => {
       clientX: eventPosition.left + 10
     });
     fixture.detectChanges();
-    const ghostElement = event.nextSibling as HTMLElement;
-    expect(ghostElement.getBoundingClientRect().top).to.equal(
-      calendarPosition.top
-    );
-    expect(ghostElement.getBoundingClientRect().bottom).to.equal(
+    expect(event.getBoundingClientRect().top).to.equal(calendarPosition.top);
+    expect(event.getBoundingClientRect().bottom).to.equal(
       calendarPosition.top + eventPosition.height
     );
     triggerDomEvent('mousemove', document.body, {
@@ -745,10 +733,8 @@ describe('CalendarDayViewComponent component', () => {
       clientX: eventPosition.left + 10
     });
     fixture.detectChanges();
-    expect(ghostElement.getBoundingClientRect().top).to.equal(
-      calendarPosition.top
-    );
-    expect(ghostElement.getBoundingClientRect().bottom).to.equal(
+    expect(event.getBoundingClientRect().top).to.equal(calendarPosition.top);
+    expect(event.getBoundingClientRect().bottom).to.equal(
       calendarPosition.top + eventPosition.height
     );
     triggerDomEvent('mouseup', document.body, {
@@ -894,7 +880,7 @@ describe('CalendarDayViewComponent component', () => {
     fixture.detectChanges();
     document.body.appendChild(fixture.nativeElement);
     const event: HTMLElement = fixture.nativeElement.querySelector(
-      '.cal-event-container'
+      '.cal-event'
     );
     const eventPosition: ClientRect = event.getBoundingClientRect();
     let dragEvent: CalendarEventTimesChangedEvent;
@@ -911,11 +897,8 @@ describe('CalendarDayViewComponent component', () => {
       clientX: eventPosition.left + 10
     });
     fixture.detectChanges();
-    const ghostElement = event.nextSibling as HTMLElement;
-    expect(ghostElement.getBoundingClientRect().top).to.equal(
-      eventPosition.top + 10
-    );
-    expect(ghostElement.getBoundingClientRect().bottom).to.equal(
+    expect(event.getBoundingClientRect().top).to.equal(eventPosition.top + 10);
+    expect(event.getBoundingClientRect().bottom).to.equal(
       eventPosition.bottom + 10
     );
     triggerDomEvent('mouseup', document.body, {
