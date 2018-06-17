@@ -16,24 +16,32 @@ import {
   MOMENT,
   CalendarEventTimesChangedEvent,
   DAYS_OF_WEEK,
-  CalendarWeekViewComponent
+  CalendarWeekViewComponent,
+  DateAdapter
 } from '../src';
 import { DragAndDropModule } from 'angular-draggable-droppable';
 import { Subject } from 'rxjs';
 import * as sinon from 'sinon';
 import { triggerDomEvent, ExternalEventComponent } from './util';
 import { take } from 'rxjs/operators';
+import { adapterFactory } from '../src/date-adapters/date-fns';
 
 describe('calendarWeekView component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        CalendarModule.forRoot({
-          dateFormatter: {
-            provide: CalendarDateFormatter,
-            useClass: CalendarMomentDateFormatter
+        CalendarModule.forRoot(
+          {
+            provide: DateAdapter,
+            useFactory: adapterFactory
+          },
+          {
+            dateFormatter: {
+              provide: CalendarDateFormatter,
+              useClass: CalendarMomentDateFormatter
+            }
           }
-        }),
+        ),
         DragAndDropModule
       ],
       declarations: [ExternalEventComponent],
@@ -42,11 +50,9 @@ describe('calendarWeekView component', () => {
   });
 
   let eventTitle: CalendarEventTitleFormatter;
-  beforeEach(
-    inject([CalendarEventTitleFormatter], _eventTitle_ => {
-      eventTitle = _eventTitle_;
-    })
-  );
+  beforeEach(inject([CalendarEventTitleFormatter], _eventTitle_ => {
+    eventTitle = _eventTitle_;
+  }));
 
   it('should generate the week view', () => {
     const fixture: ComponentFixture<
@@ -625,7 +631,8 @@ describe('calendarWeekView component', () => {
       clientY: eventPosition.top
     });
     fixture.detectChanges();
-    expect(Math.round(event.getBoundingClientRect().left)).to.equal(
+    const ghostElement = event.nextSibling as HTMLElement;
+    expect(Math.round(ghostElement.getBoundingClientRect().left)).to.equal(
       Math.round(eventPosition.left - dayWidth)
     );
     triggerDomEvent('mouseup', document.body, {
@@ -799,7 +806,6 @@ describe('calendarWeekView component', () => {
       clientX: headerPosition.left
     });
     fixture.detectChanges();
-    expect(header.classList.contains('cal-drag-over')).to.equal(true);
     triggerDomEvent('mouseup', document.body, {
       clientY: headerPosition.top,
       clientX: headerPosition.left
