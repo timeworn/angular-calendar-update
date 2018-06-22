@@ -88,7 +88,15 @@ export default (env = 'development') => {
     resolve: {
       extensions: ['.ts', '.js'],
       alias: {
-        'angular-calendar$': path.resolve(__dirname, 'src/index.ts')
+        'angular-calendar$': path.resolve(__dirname, 'src/index.ts'),
+        'angular-calendar/date-adapters/date-fns$': path.resolve(
+          __dirname,
+          'src/date-adapters/date-fns.ts'
+        ),
+        'angular-calendar/date-adapters/moment$': path.resolve(
+          __dirname,
+          'src/date-adapters/moment.ts'
+        )
       }
     },
     devServer: {

@@ -20,35 +20,41 @@ import {
   CalendarMonthViewDay,
   DAYS_OF_WEEK,
   CalendarEventTimesChangedEvent,
-  CalendarMonthViewComponent
-} from './../src';
+  CalendarMonthViewComponent,
+  DateAdapter,
+  CalendarMonthViewEventTimesChangedEvent
+} from '../src';
 import { Subject } from 'rxjs';
 import { triggerDomEvent } from './util';
 import { take } from 'rxjs/operators';
-import { CalendarMonthViewEventTimesChangedEvent } from '../src/modules/month';
+import { adapterFactory } from '../src/date-adapters/date-fns';
 
 describe('calendarMonthView component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
-        CalendarModule.forRoot({
-          dateFormatter: {
-            provide: CalendarDateFormatter,
-            useClass: CalendarMomentDateFormatter
+        CalendarModule.forRoot(
+          {
+            provide: DateAdapter,
+            useFactory: adapterFactory
+          },
+          {
+            dateFormatter: {
+              provide: CalendarDateFormatter,
+              useClass: CalendarMomentDateFormatter
+            }
           }
-        })
+        )
       ],
       providers: [{ provide: MOMENT, useValue: moment }]
     });
   });
 
   let eventTitle: CalendarEventTitleFormatter;
-  beforeEach(
-    inject([CalendarEventTitleFormatter], _eventTitle_ => {
-      eventTitle = _eventTitle_;
-    })
-  );
+  beforeEach(inject([CalendarEventTitleFormatter], _eventTitle_ => {
+    eventTitle = _eventTitle_;
+  }));
 
   it('should generate the month view', () => {
     const fixture: ComponentFixture<
@@ -576,7 +582,8 @@ describe('calendarMonthView component', () => {
     });
     fixture.detectChanges();
     expect(cells[10].classList.contains('cal-drag-over')).to.equal(true);
-    const eventAfterDragPosition: ClientRect = event.getBoundingClientRect();
+    const ghostElement = event.nextSibling as HTMLElement;
+    const eventAfterDragPosition: ClientRect = ghostElement.getBoundingClientRect();
     const movedLeft: number = dragToCellPosition.left - eventStartPosition.left;
     expect(eventAfterDragPosition.left).to.equal(
       eventStartPosition.left + movedLeft
