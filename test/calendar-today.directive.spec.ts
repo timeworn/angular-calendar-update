@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { expect } from 'chai';
 import startOfToday from 'date-fns/start_of_today';
-import { CalendarModule, DateAdapter } from '../src';
-import { adapterFactory } from '../src/date-adapters/date-fns';
+import { CalendarModule } from '../src';
 
 @Component({
   template: '<button mwlCalendarToday [(viewDate)]="viewDate">Next</button>'
@@ -15,12 +14,7 @@ class TestComponent {
 describe('mwlCalendarNextView directive', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CalendarModule.forRoot({
-          provide: DateAdapter,
-          useFactory: adapterFactory
-        })
-      ],
+      imports: [CalendarModule.forRoot()],
       declarations: [TestComponent]
     });
   });

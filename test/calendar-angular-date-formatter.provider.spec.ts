@@ -1,26 +1,21 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { expect } from 'chai';
 import startOfDay from 'date-fns/start_of_day';
-import { CalendarAngularDateFormatter, DateAdapter } from '../src';
-import { adapterFactory } from '../src/date-adapters/date-fns';
+import { CalendarAngularDateFormatter } from './../src';
 
 describe('CalendarAngularDateFormatter provider', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        CalendarAngularDateFormatter,
-        {
-          provide: DateAdapter,
-          useFactory: adapterFactory
-        }
-      ]
+      providers: [CalendarAngularDateFormatter]
     });
   });
 
   let dateFormatter: CalendarAngularDateFormatter;
-  beforeEach(inject([CalendarAngularDateFormatter], _dateFormatter_ => {
-    dateFormatter = _dateFormatter_;
-  }));
+  beforeEach(
+    inject([CalendarAngularDateFormatter], _dateFormatter_ => {
+      dateFormatter = _dateFormatter_;
+    })
+  );
 
   it('monthViewColumnHeader', () => {
     expect(
