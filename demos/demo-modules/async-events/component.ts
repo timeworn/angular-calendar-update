@@ -22,15 +22,6 @@ interface Film {
   release_date: string;
 }
 
-const timezoneOffset = new Date().getTimezoneOffset();
-const hoursOffset = String(Math.floor(Math.abs(timezoneOffset / 60))).padStart(
-  2,
-  '0'
-);
-const minutesOffset = String(Math.abs(timezoneOffset % 60)).padEnd(2, '0');
-const direction = timezoneOffset > 0 ? '-' : '+';
-const timezoneOffsetString = `T00:00:00${direction}${hoursOffset}${minutesOffset}`;
-
 @Component({
   selector: 'mwl-demo-component',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -82,7 +73,7 @@ export class DemoComponent implements OnInit {
           return results.map((film: Film) => {
             return {
               title: film.title,
-              start: new Date(film.release_date + timezoneOffsetString),
+              start: new Date(film.release_date),
               color: colors.yellow,
               meta: {
                 film
