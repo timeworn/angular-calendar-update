@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { MonthViewDay, CalendarEvent } from 'calendar-utils';
 import { trackByEventId } from '../common/util';
+import { PlacementArray } from 'positioning';
 
 @Component({
   selector: 'mwl-calendar-month-cell',
@@ -40,6 +41,8 @@ import { trackByEventId } from '../common/util';
           [tooltipTemplate]="tooltipTemplate"
           [tooltipAppendToBody]="tooltipAppendToBody"
           mwlDraggable
+          [class.cal-draggable]="event.draggable"
+          dragActiveClass="cal-drag-active"
           [dropData]="{event: event}"
           [dragAxis]="{x: event.draggable, y: event.draggable}"
           (mwlClick)="eventClicked.emit({ event: event })">
@@ -81,7 +84,7 @@ export class CalendarMonthCellComponent {
 
   @Input() locale: string;
 
-  @Input() tooltipPlacement: string;
+  @Input() tooltipPlacement: PlacementArray;
 
   @Input() tooltipAppendToBody: boolean;
 

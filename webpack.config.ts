@@ -22,9 +22,18 @@ export default (env = 'development') => {
       rules: removeEmpty([
         ifDevelopment({
           enforce: 'pre',
-          test: /\.ts$/,
+          test: /src\/.+\.ts$/,
           loader: 'tslint-loader',
           exclude: /node_modules/
+        }),
+        ifDevelopment({
+          enforce: 'pre',
+          test: /demos\/.+\.ts$/,
+          loader: 'tslint-loader',
+          exclude: /node_modules/,
+          options: {
+            configFile: 'demos/tslint.json'
+          }
         }),
         ifDevelopment(
           {
@@ -88,7 +97,15 @@ export default (env = 'development') => {
     resolve: {
       extensions: ['.ts', '.js'],
       alias: {
-        'angular-calendar$': path.resolve(__dirname, 'src/index.ts')
+        'angular-calendar$': path.resolve(__dirname, 'src/index.ts'),
+        'angular-calendar/date-adapters/date-fns$': path.resolve(
+          __dirname,
+          'src/date-adapters/date-fns/index.ts'
+        ),
+        'angular-calendar/date-adapters/moment$': path.resolve(
+          __dirname,
+          'src/date-adapters/moment/index.ts'
+        )
       }
     },
     devServer: {

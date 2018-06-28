@@ -20,12 +20,17 @@ import {
   ViewPeriod
 } from 'calendar-utils';
 import { ResizeEvent } from 'angular-resizable-element';
-import addDays from 'date-fns/add_days/index';
 import { CalendarDragHelper } from '../common/calendar-drag-helper.provider';
 import { CalendarResizeHelper } from '../common/calendar-resize-helper.provider';
-import { CalendarEventTimesChangedEvent } from '../common/calendar-event-times-changed-event.interface';
+import {
+  CalendarEventTimesChangedEvent,
+  CalendarEventTimesChangedEventType
+} from '../common/calendar-event-times-changed-event.interface';
 import { CalendarUtils } from '../common/calendar-utils.provider';
-import { validateEvents, trackByIndex } from '../common/util';
+import { validateEvents, trackByIndex, roundToNearest } from '../common/util';
+import { DateAdapter } from '../../date-adapters/date-adapter';
+import { DragEnd } from 'angular-draggable-droppable/draggable.directive';
+import { PlacementArray } from 'positioning';
 
 export interface WeekViewEventResize {
   originalOffset: number;
@@ -51,47 +56,67 @@ export interface CalendarWeekViewBeforeRenderEvent {
 @Component({
   selector: 'mwl-calendar-week-view',
   template: `
-    <div class="cal-week-view" #weekViewContainer>
+    <div class="cal-week-view">
       <mwl-calendar-week-view-header
         [days]="days"
         [locale]="locale"
         [customTemplate]="headerTemplate"
         (dayHeaderClicked)="dayHeaderClicked.emit($event)"
-        (eventDropped)="eventTimesChanged.emit($event)">
+        (eventDropped)="eventTimesChanged.emit({
+          event: $event.event, 
+          newStart: $event.newStart, 
+          type: CalendarEventTimesChangedEventType.Drop
+        })">
       </mwl-calendar-week-view-header>
-      <div *ngFor="let eventRow of view.eventRows; trackBy:trackByIndex" #eventRowContainer class="cal-events-row">
+      <div 
+        #weekEventsContainer
+        mwlDroppable
+        (drop)="eventDroppedWithinContainer = true">
         <div
-          *ngFor="let weekEvent of eventRow.row; trackBy:trackByEventId"
-          #event
-          class="cal-event-container"
-          [class.cal-draggable]="weekEvent.event.draggable"
-          [class.cal-starts-within-week]="!weekEvent.startsBeforeWeek"
-          [class.cal-ends-within-week]="!weekEvent.endsAfterWeek"
-          [ngClass]="weekEvent.event?.cssClass"
-          [style.width]="((100 / days.length) * weekEvent.span) + '%'"
-          [style.marginLeft]="((100 / days.length) * weekEvent.offset) + '%'"
-          mwlResizable
-          [resizeEdges]="{left: weekEvent.event?.resizable?.beforeStart, right: weekEvent.event?.resizable?.afterEnd}"
-          [resizeSnapGrid]="{left: dayColumnWidth, right: dayColumnWidth}"
-          [validateResize]="validateResize"
-          (resizeStart)="resizeStarted(weekViewContainer, weekEvent, $event)"
-          (resizing)="resizing(weekEvent, $event, dayColumnWidth)"
-          (resizeEnd)="resizeEnded(weekEvent)"
-          mwlDraggable
-          [dragAxis]="{x: weekEvent.event.draggable && currentResizes.size === 0, y: false}"
-          [dragSnapGrid]="{x: dayColumnWidth}"
-          [validateDrag]="validateDrag"
-          (dragPointerDown)="dragStart(weekViewContainer, event)"
-          (dragEnd)="eventDragged(weekEvent, $event.x, dayColumnWidth)">
-          <mwl-calendar-week-view-event
-            [weekEvent]="weekEvent"
-            [tooltipPlacement]="tooltipPlacement"
-            [tooltipTemplate]="tooltipTemplate"
-            [tooltipAppendToBody]="tooltipAppendToBody"
-            [customTemplate]="eventTemplate"
-            [eventTitleTemplate]="eventTitleTemplate"
-            (eventClicked)="eventClicked.emit({event: weekEvent.event})">
-          </mwl-calendar-week-view-event>
+          *ngFor="let eventRow of view.eventRows; trackBy:trackByIndex"
+          #eventRowContainer
+          class="cal-events-row">
+          <div
+            *ngFor="let weekEvent of eventRow.row; trackBy:trackByEventId"
+            #event
+            class="cal-event-container"
+            [class.cal-draggable]="weekEvent.event.draggable"
+            [class.cal-starts-within-week]="!weekEvent.startsBeforeWeek"
+            [class.cal-ends-within-week]="!weekEvent.endsAfterWeek"
+            [ngClass]="weekEvent.event?.cssClass"
+            [style.width]="((100 / days.length) * weekEvent.span) + '%'"
+            [style.marginLeft]="((100 / days.length) * weekEvent.offset) + '%'"
+            mwlResizable
+            [resizeEdges]="{
+              left: weekEvent.event?.resizable?.beforeStart, 
+              right: weekEvent.event?.resizable?.afterEnd
+            }"
+            [resizeSnapGrid]="{left: dayColumnWidth, right: dayColumnWidth}"
+            [validateResize]="validateResize"
+            (resizeStart)="resizeStarted(weekEventsContainer, weekEvent, $event)"
+            (resizing)="resizing(weekEvent, $event, dayColumnWidth)"
+            (resizeEnd)="resizeEnded(weekEvent)"
+            mwlDraggable
+            dragActiveClass="cal-drag-active"
+            [dropData]="{event: weekEvent.event}"
+            [dragAxis]="{
+              x: weekEvent.event.draggable && currentResizes.size === 0,
+              y: !snapDraggedEvents && weekEvent.event.draggable && currentResizes.size === 0
+            }"
+            [dragSnapGrid]="snapDraggedEvents ? {x: dayColumnWidth} : {}"
+            [validateDrag]="snapDraggedEvents ? validateDrag : false"
+            (dragPointerDown)="dragStarted(weekEventsContainer, event)"
+            (dragEnd)="dragEnded(weekEvent, $event, dayColumnWidth)">
+            <mwl-calendar-week-view-event
+              [weekEvent]="weekEvent"
+              [tooltipPlacement]="tooltipPlacement"
+              [tooltipTemplate]="tooltipTemplate"
+              [tooltipAppendToBody]="tooltipAppendToBody"
+              [customTemplate]="eventTemplate"
+              [eventTitleTemplate]="eventTitleTemplate"
+              (eventClicked)="eventClicked.emit({event: weekEvent.event})">
+            </mwl-calendar-week-view-event>
+          </div>
         </div>
       </div>
     </div>
@@ -127,7 +152,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
   /**
    * The placement of the event tooltip
    */
-  @Input() tooltipPlacement: string = 'bottom';
+  @Input() tooltipPlacement: PlacementArray = 'auto';
 
   /**
    * A custom template to use for the event tooltips
@@ -169,6 +194,11 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    * An array of day indexes (0 = sunday, 1 = monday etc) that indicate which days are weekends
    */
   @Input() weekendDays: number[];
+
+  /**
+   * Whether to snap events to a grid when dragging
+   */
+  @Input() snapDraggedEvents: boolean = true;
 
   /**
    * Called when a header week day is clicked. Adding a `cssClass` property on `$event.day` will add that class to the header element
@@ -224,6 +254,11 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
   /**
    * @hidden
    */
+  eventDroppedWithinContainer = false;
+
+  /**
+   * @hidden
+   */
   validateDrag: (args: any) => boolean;
 
   /**
@@ -235,6 +270,11 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    * @hidden
    */
   dayColumnWidth: number;
+
+  /**
+   * @hidden
+   */
+  CalendarEventTimesChangedEventType = CalendarEventTimesChangedEventType;
 
   /**
    * @hidden
@@ -253,7 +293,8 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
   constructor(
     private cdr: ChangeDetectorRef,
     private utils: CalendarUtils,
-    @Inject(LOCALE_ID) locale: string
+    @Inject(LOCALE_ID) locale: string,
+    private dateAdapter: DateAdapter
   ) {
     this.locale = locale;
   }
@@ -300,7 +341,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    * @hidden
    */
   resizeStarted(
-    weekViewContainer: HTMLElement,
+    weekEventsContainer: HTMLElement,
     weekEvent: WeekViewEvent,
     resizeEvent: ResizeEvent
   ): void {
@@ -309,9 +350,9 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
       originalSpan: weekEvent.span,
       edge: typeof resizeEvent.edges.left !== 'undefined' ? 'left' : 'right'
     });
-    this.dayColumnWidth = this.getDayColumnWidth(weekViewContainer);
+    this.dayColumnWidth = this.getDayColumnWidth(weekEventsContainer);
     const resizeHelper: CalendarResizeHelper = new CalendarResizeHelper(
-      weekViewContainer,
+      weekEventsContainer,
       this.dayColumnWidth
     );
     this.validateResize = ({ rectangle }) =>
@@ -349,8 +390,9 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
       weekEvent
     );
 
+    const resizingBeforeStart = currentResize.edge === 'left';
     let daysDiff: number;
-    if (currentResize.edge === 'left') {
+    if (resizingBeforeStart) {
       daysDiff = weekEvent.offset - currentResize.originalOffset;
     } else {
       daysDiff = weekEvent.span - currentResize.originalSpan;
@@ -360,33 +402,20 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
     weekEvent.span = currentResize.originalSpan;
 
     let newStart: Date = weekEvent.event.start;
-    let newEnd: Date = weekEvent.event.end;
-    if (currentResize.edge === 'left') {
-      newStart = addDays(newStart, daysDiff);
-    } else if (newEnd) {
-      newEnd = addDays(newEnd, daysDiff);
+    let newEnd: Date = weekEvent.event.end || weekEvent.event.start;
+    if (resizingBeforeStart) {
+      newStart = this.dateAdapter.addDays(newStart, daysDiff);
+    } else {
+      newEnd = this.dateAdapter.addDays(newEnd, daysDiff);
     }
 
-    this.eventTimesChanged.emit({ newStart, newEnd, event: weekEvent.event });
+    this.eventTimesChanged.emit({
+      newStart,
+      newEnd,
+      event: weekEvent.event,
+      type: CalendarEventTimesChangedEventType.Resize
+    });
     this.currentResizes.delete(weekEvent);
-  }
-
-  /**
-   * @hidden
-   */
-  eventDragged(
-    weekEvent: WeekViewEvent,
-    draggedByPx: number,
-    dayWidth: number
-  ): void {
-    const daysDragged: number = draggedByPx / dayWidth;
-    const newStart: Date = addDays(weekEvent.event.start, daysDragged);
-    let newEnd: Date;
-    if (weekEvent.event.end) {
-      newEnd = addDays(weekEvent.event.end, daysDragged);
-    }
-
-    this.eventTimesChanged.emit({ newStart, newEnd, event: weekEvent.event });
   }
 
   /**
@@ -399,15 +428,44 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
   /**
    * @hidden
    */
-  dragStart(weekViewContainer: HTMLElement, event: HTMLElement): void {
-    this.dayColumnWidth = this.getDayColumnWidth(weekViewContainer);
+  dragStarted(weekEventsContainer: HTMLElement, event: HTMLElement): void {
+    this.dayColumnWidth = this.getDayColumnWidth(weekEventsContainer);
     const dragHelper: CalendarDragHelper = new CalendarDragHelper(
-      weekViewContainer,
+      weekEventsContainer,
       event
     );
     this.validateDrag = ({ x, y }) =>
       this.currentResizes.size === 0 && dragHelper.validateDrag({ x, y });
+    this.eventDroppedWithinContainer = false;
     this.cdr.markForCheck();
+  }
+
+  /**
+   * @hidden
+   */
+  dragEnded(
+    weekEvent: WeekViewEvent,
+    dragEndEvent: DragEnd,
+    dayWidth: number
+  ): void {
+    if (this.eventDroppedWithinContainer) {
+      const daysDragged = roundToNearest(dragEndEvent.x, dayWidth) / dayWidth;
+      const newStart = this.dateAdapter.addDays(
+        weekEvent.event.start,
+        daysDragged
+      );
+      let newEnd: Date;
+      if (weekEvent.event.end) {
+        newEnd = this.dateAdapter.addDays(weekEvent.event.end, daysDragged);
+      }
+
+      this.eventTimesChanged.emit({
+        newStart,
+        newEnd,
+        event: weekEvent.event,
+        type: CalendarEventTimesChangedEventType.Drag
+      });
+    }
   }
 
   private refreshHeader(): void {
