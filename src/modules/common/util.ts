@@ -22,10 +22,6 @@ export function isInside(outer: ClientRect, inner: ClientRect): boolean {
   );
 }
 
-export function roundToNearest(amount: number, precision: number) {
-  return Math.round(amount / precision) * precision;
-}
-
 export const trackByEventId = (index: number, event: CalendarEvent) =>
   event.id ? event.id : event;
 

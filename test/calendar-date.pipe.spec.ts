@@ -8,9 +8,7 @@ import {
   CalendarMomentDateFormatter,
   CalendarDateFormatter,
   MOMENT
-} from '../src';
-import { adapterFactory } from '../src/date-adapters/date-fns';
-import { DateAdapter } from 'angular-calendar';
+} from './../src';
 
 @Component({
   template: '{{ date | calendarDate:method:locale }}'
@@ -27,18 +25,12 @@ describe('calendarDate pipe', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        CalendarModule.forRoot(
-          {
-            provide: DateAdapter,
-            useFactory: adapterFactory
-          },
-          {
-            dateFormatter: {
-              provide: CalendarDateFormatter,
-              useClass: CalendarMomentDateFormatter
-            }
+        CalendarModule.forRoot({
+          dateFormatter: {
+            provide: CalendarDateFormatter,
+            useClass: CalendarMomentDateFormatter
           }
-        )
+        })
       ],
       declarations: [TestComponent],
       providers: [{ provide: MOMENT, useValue: moment }]
@@ -47,13 +39,12 @@ describe('calendarDate pipe', () => {
 
   let dateFormatter: CalendarDateFormatter;
   let defaultLocale: string;
-  beforeEach(inject(
-    [CalendarDateFormatter, LOCALE_ID],
-    (_dateFormatter_, locale) => {
+  beforeEach(
+    inject([CalendarDateFormatter, LOCALE_ID], (_dateFormatter_, locale) => {
       dateFormatter = _dateFormatter_;
       defaultLocale = locale;
-    }
-  ));
+    })
+  );
 
   it('should use the date formatter to format the date', () => {
     const fixture: ComponentFixture<TestComponent> = TestBed.createComponent(

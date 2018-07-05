@@ -1,10 +1,10 @@
+import 'flatpickr/dist/flatpickr.css';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { CalendarModule } from 'angular-calendar';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-import { DemoUtilsModule } from '../demo-utils/module';
+import { FlatpickrModule } from 'angularx-flatpickr';
 import { DemoComponent } from './component';
 
 @NgModule({
@@ -12,11 +12,8 @@ import { DemoComponent } from './component';
     CommonModule,
     FormsModule,
     NgbModalModule.forRoot(),
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory
-    }),
-    DemoUtilsModule
+    FlatpickrModule.forRoot(),
+    CalendarModule.forRoot()
   ],
   declarations: [DemoComponent],
   exports: [DemoComponent]

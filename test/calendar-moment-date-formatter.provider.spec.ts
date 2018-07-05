@@ -2,7 +2,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { expect } from 'chai';
 import moment from 'moment';
 import startOfDay from 'date-fns/start_of_day';
-import { CalendarMomentDateFormatter, MOMENT } from '../src';
+import { CalendarMomentDateFormatter, MOMENT } from './../src';
 
 describe('calendarMomentDateFormatter provider', () => {
   beforeEach(() => {
@@ -15,9 +15,11 @@ describe('calendarMomentDateFormatter provider', () => {
   });
 
   let dateFormatter: CalendarMomentDateFormatter;
-  beforeEach(inject([CalendarMomentDateFormatter], _dateFormatter_ => {
-    dateFormatter = _dateFormatter_;
-  }));
+  beforeEach(
+    inject([CalendarMomentDateFormatter], _dateFormatter_ => {
+      dateFormatter = _dateFormatter_;
+    })
+  );
 
   it('monthViewColumnHeader', () => {
     expect(
@@ -61,7 +63,7 @@ describe('calendarMomentDateFormatter provider', () => {
         date: new Date('2016-01-01'),
         locale: 'en'
       })
-    ).to.equal('Jan 1');
+    ).to.equal('1 Jan');
   });
 
   it('weekViewTitle', () => {

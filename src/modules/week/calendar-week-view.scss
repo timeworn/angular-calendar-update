@@ -35,12 +35,6 @@
   .cal-event-container {
     display: inline-block;
     position: absolute;
-    cursor: pointer;
-
-    &.resize-active {
-      z-index: 1;
-      pointer-events: none;
-    }
   }
 
   .cal-event {
@@ -53,6 +47,10 @@
     background-color: #d1e8ff;
     border: 1px solid #1e90ff;
     color: #1e90ff;
+  }
+
+  .cal-event-title:link {
+    color: currentColor;
   }
 
   .cal-draggable {
@@ -82,13 +80,5 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .cal-drag-active {
-    z-index: 1;
-
-    & * {
-      pointer-events: none;
-    }
   }
 }
