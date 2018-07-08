@@ -6,6 +6,7 @@ import {
   TemplateRef
 } from '@angular/core';
 import { WeekViewEvent } from 'calendar-utils';
+import { PlacementArray } from 'positioning';
 
 @Component({
   selector: 'mwl-calendar-week-view-event',
@@ -25,14 +26,14 @@ import { WeekViewEvent } from 'calendar-utils';
         [tooltipPlacement]="tooltipPlacement"
         [tooltipEvent]="weekEvent.event"
         [tooltipTemplate]="tooltipTemplate"
-        [tooltipAppendToBody]="tooltipAppendToBody">
+        [tooltipAppendToBody]="tooltipAppendToBody"
+        (mwlClick)="eventClicked.emit()">
         <mwl-calendar-event-actions [event]="weekEvent.event"></mwl-calendar-event-actions>
         &ngsp;
         <mwl-calendar-event-title
           [event]="weekEvent.event"
           [customTemplate]="eventTitleTemplate"
-          view="week"
-          (mwlClick)="eventClicked.emit()">
+          view="week">
         </mwl-calendar-event-title>
       </div>
     </ng-template>
@@ -51,7 +52,7 @@ import { WeekViewEvent } from 'calendar-utils';
 export class CalendarWeekViewEventComponent {
   @Input() weekEvent: WeekViewEvent;
 
-  @Input() tooltipPlacement: string;
+  @Input() tooltipPlacement: PlacementArray;
 
   @Input() tooltipAppendToBody: boolean;
 
