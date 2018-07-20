@@ -43,8 +43,18 @@
     background-color: #ededed;
   }
 
+  .cal-drag-active .cal-hour-segment {
+    pointer-events: none;
+  }
+
   .cal-event-container {
     position: absolute;
+    cursor: pointer;
+
+    &.resize-active {
+      z-index: 1;
+      pointer-events: none;
+    }
   }
 
   .cal-event {
@@ -58,11 +68,6 @@
     background-color: #d1e8ff;
     border: 1px solid #1e90ff;
     color: #1e90ff;
-    user-select: none;
-  }
-
-  .cal-event-title:link {
-    color: currentColor;
   }
 
   .cal-draggable {
@@ -82,5 +87,14 @@
   .cal-all-day-event {
     padding: 8px;
     border: solid 1px;
+    cursor: pointer;
+  }
+
+  .cal-drag-active {
+    z-index: 1;
+
+    & * {
+      pointer-events: none;
+    }
   }
 }

@@ -1,12 +1,19 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { expect } from 'chai';
 import startOfDay from 'date-fns/start_of_day';
-import { CalendarAngularDateFormatter } from './../src';
+import { CalendarAngularDateFormatter, DateAdapter } from '../src';
+import { adapterFactory } from '../src/date-adapters/date-fns';
 
 describe('CalendarAngularDateFormatter provider', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [CalendarAngularDateFormatter]
+      providers: [
+        CalendarAngularDateFormatter,
+        {
+          provide: DateAdapter,
+          useFactory: adapterFactory
+        }
+      ]
     });
   });
 
