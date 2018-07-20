@@ -9,9 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "",
     "paths": {
-      "angular-calendar": ["./src/index"],
-      "angular-calendar/date-adapters/date-fns": ["./src/date-adapters/date-fns/index"],
-      "angular-calendar/date-adapters/moment": ["./src/date-adapters/moment/index"]
+      "angular-calendar": ["./src/index"]
     },
     "lib": ["es2017", "dom"]
   },

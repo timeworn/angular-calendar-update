@@ -1,14 +1,15 @@
-import { NgModule, ModuleWithProviders, Provider } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
+import { DraggableHelper } from 'angular-draggable-droppable';
 import {
   CalendarCommonModule,
   CalendarModuleConfig,
   CalendarEventTitleFormatter,
-  CalendarDateFormatter
+  CalendarDateFormatter,
+  CalendarUtils
 } from './common/calendar-common.module';
 import { CalendarMonthModule } from './month/calendar-month.module';
 import { CalendarWeekModule } from './week/calendar-week.module';
 import { CalendarDayModule } from './day/calendar-day.module';
-import { CalendarUtils } from './common/calendar-utils.provider';
 
 export * from './common/calendar-common.module';
 export * from './month/calendar-month.module';
@@ -45,14 +46,11 @@ export * from './day/calendar-day.module';
   ]
 })
 export class CalendarModule {
-  static forRoot(
-    dateAdapter: Provider,
-    config: CalendarModuleConfig = {}
-  ): ModuleWithProviders {
+  static forRoot(config: CalendarModuleConfig = {}): ModuleWithProviders {
     return {
       ngModule: CalendarModule,
       providers: [
-        dateAdapter,
+        DraggableHelper,
         config.eventTitleFormatter || CalendarEventTitleFormatter,
         config.dateFormatter || CalendarDateFormatter,
         config.utils || CalendarUtils
