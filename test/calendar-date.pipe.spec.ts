@@ -8,9 +8,7 @@ import {
   CalendarMomentDateFormatter,
   CalendarDateFormatter,
   MOMENT
-} from '../src';
-import { adapterFactory } from '../src/date-adapters/date-fns';
-import { DateAdapter } from 'angular-calendar';
+} from './../src';
 
 @Component({
   template: '{{ date | calendarDate:method:locale }}'
@@ -27,18 +25,12 @@ describe('calendarDate pipe', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        CalendarModule.forRoot(
-          {
-            provide: DateAdapter,
-            useFactory: adapterFactory
-          },
-          {
-            dateFormatter: {
-              provide: CalendarDateFormatter,
-              useClass: CalendarMomentDateFormatter
-            }
+        CalendarModule.forRoot({
+          dateFormatter: {
+            provide: CalendarDateFormatter,
+            useClass: CalendarMomentDateFormatter
           }
-        )
+        })
       ],
       declarations: [TestComponent],
       providers: [{ provide: MOMENT, useValue: moment }]

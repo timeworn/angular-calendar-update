@@ -1,7 +1,7 @@
 import { isInside } from './util';
 
 export class CalendarDragHelper {
-  private readonly startPosition: ClientRect;
+  startPosition: ClientRect;
 
   constructor(
     private dragContainerElement: HTMLElement,

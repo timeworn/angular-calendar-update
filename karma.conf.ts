@@ -3,7 +3,6 @@ import * as ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import * as StyleLintPlugin from 'stylelint-webpack-plugin';
 import * as FilterWarningsPlugin from 'webpack-filter-warnings-plugin';
 import * as WebpackKarmaDieHardPlugin from '@mattlewis92/webpack-karma-die-hard';
-import * as path from 'path';
 
 export default config => {
   config.set({
@@ -26,32 +25,18 @@ export default config => {
     webpack: {
       mode: 'development',
       resolve: {
-        extensions: ['.ts', '.js', '.json'],
-        alias: {
-          'angular-calendar$': path.resolve(__dirname, 'src/index.ts')
-        }
+        extensions: ['.ts', '.js', '.json']
       },
       module: {
         rules: [
           {
             enforce: 'pre',
-            test: /src\/.+\.ts$/,
+            test: /\.ts$/,
             loader: 'tslint-loader',
             exclude: /node_modules/,
             options: {
               emitErrors: config.singleRun,
               failOnHint: config.singleRun
-            }
-          },
-          {
-            enforce: 'pre',
-            test: /test\/.+\.ts$/,
-            loader: 'tslint-loader',
-            exclude: /node_modules/,
-            options: {
-              emitErrors: config.singleRun,
-              failOnHint: config.singleRun,
-              configFile: 'test/tslint.json'
             }
           },
           {
@@ -89,7 +74,7 @@ export default config => {
       },
       plugins: [
         new FilterWarningsPlugin({
-          exclude: /was not found in /
+          exclude: /export '\w+' was not found in 'calendar-utils'/
         }),
         ...(config.singleRun
           ? [

@@ -64,12 +64,14 @@ const dependencyVersions: any = {
     .version,
   dateFns: require('date-fns/package.json').version,
   rxjs: require('rxjs/package.json').version,
-  bootstrap: require('bootstrap-css-only/package.json').version,
+  bootstrap: require('bootstrap/package.json').version,
   zoneJs: require('zone.js/package.json').version,
   ngBootstrap: require('@ng-bootstrap/ng-bootstrap/package.json').version,
   rrule: require('rrule/package.json').version,
   fontAwesome: require('font-awesome/package.json').version,
-  positioning: require('positioning/package.json').version
+  positioning: require('positioning/package.json').version,
+  flatpickr: require('flatpickr/package.json').version,
+  angularxFlatpickr: require('angularx-flatpickr/package.json').version
 };
 
 @Component({
@@ -123,15 +125,18 @@ export class DemoAppComponent implements OnInit {
       [path: string]: string;
     } = {
       'index.html': `
-<link href="https://unpkg.com/bootstrap-css-only@${
+<link href="https://unpkg.com/bootstrap@${
         dependencyVersions.bootstrap
-      }/css/bootstrap.min.css" rel="stylesheet">
+      }/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://unpkg.com/font-awesome@${
         dependencyVersions.fontAwesome
       }/css/font-awesome.css" rel="stylesheet">
 <link href="https://unpkg.com/angular-calendar@${
         dependencyVersions.angularCalendar
       }/css/angular-calendar.css" rel="stylesheet">
+<link href="https://unpkg.com/flatpickr@${
+        dependencyVersions.flatpickr
+      }/dist/flatpickr.css" rel="stylesheet">
 <mwl-demo-component>Loading...</mwl-demo-component>
 `.trim(),
       'main.ts': `
@@ -201,7 +206,8 @@ platformBrowserDynamic().bootstrapModule(BootstrapModule).then(ref => {
           'angular-calendar': dependencyVersions.angularCalendar,
           '@ng-bootstrap/ng-bootstrap': dependencyVersions.ngBootstrap,
           rrule: dependencyVersions.rrule,
-          'calendar-utils': dependencyVersions.calendarUtils
+          flatpickr: dependencyVersions.flatpickr,
+          'angularx-flatpickr': dependencyVersions.angularxFlatpickr
         }
       },
       {

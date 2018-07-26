@@ -1,13 +1,21 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CalendarEvent, CalendarUtils } from 'angular-calendar';
-import { subWeeks, startOfMonth, endOfMonth, addWeeks } from 'date-fns';
-import { GetMonthViewArgs, MonthView } from 'calendar-utils';
+import {
+  addDays,
+  addHours,
+  startOfDay,
+  subWeeks,
+  startOfMonth,
+  endOfMonth,
+  addWeeks
+} from 'date-fns';
+import { GetMonthViewArgs, MonthView, getMonthView } from 'calendar-utils';
 
 export class MyCalendarUtils extends CalendarUtils {
   getMonthView(args: GetMonthViewArgs): MonthView {
     args.viewStart = subWeeks(startOfMonth(args.viewDate), 1);
     args.viewEnd = addWeeks(endOfMonth(args.viewDate), 1);
-    return super.getMonthView(args);
+    return getMonthView(args);
   }
 }
 
