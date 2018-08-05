@@ -74,7 +74,7 @@ export class CalendarMomentDateFormatter
   }: DateFormatterParams): string {
     return this.moment(date)
       .locale(locale)
-      .format('MMM D');
+      .format('D MMM');
   }
 
   /**
@@ -84,15 +84,6 @@ export class CalendarMomentDateFormatter
     return this.moment(date)
       .locale(locale)
       .format('[Week] W [of] YYYY');
-  }
-
-  /**
-   * The time formatting down the left hand side of the week view
-   */
-  public weekViewHour({ date, locale }: DateFormatterParams): string {
-    return this.moment(date)
-      .locale(locale)
-      .format('ha');
   }
 
   /**

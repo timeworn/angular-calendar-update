@@ -50,11 +50,6 @@ export interface CalendarDateFormatterInterface {
   /**
    * The time formatting down the left hand side of the day view
    */
-  weekViewHour({ date: Date }: DateFormatterParams): string;
-
-  /**
-   * The time formatting down the left hand side of the day view
-   */
   dayViewHour({ date: Date }: DateFormatterParams): string;
 
   /**

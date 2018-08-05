@@ -1,19 +1,12 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { expect } from 'chai';
 import { startOfDay } from 'date-fns';
-import { CalendarNativeDateFormatter, DateAdapter } from '../src';
-import { adapterFactory } from '../src/date-adapters/date-fns';
+import { CalendarNativeDateFormatter } from './../src';
 
 describe('calendarNativeDateFormatter provider', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        CalendarNativeDateFormatter,
-        {
-          provide: DateAdapter,
-          useFactory: adapterFactory
-        }
-      ]
+      providers: [CalendarNativeDateFormatter]
     });
   });
 
@@ -74,15 +67,6 @@ describe('calendarNativeDateFormatter provider', () => {
         locale: 'en'
       })
     ).to.equal('Week 1 of 2016');
-  });
-
-  it('weekViewHour', () => {
-    expect(
-      dateFormatter.weekViewHour({
-        date: startOfDay(new Date('2016-01-01')),
-        locale: 'en'
-      })
-    ).to.equal('12 AM');
   });
 
   it('dayViewHour', () => {

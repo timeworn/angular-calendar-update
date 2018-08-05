@@ -6,7 +6,7 @@
         mwlCalendarPreviousView
         [view]="view"
         [(viewDate)]="viewDate"
-        [excludeDays]="excludeDays">
+        (viewDateChange)="skipWeekends('back')">
         Previous
       </div>
       <div
@@ -20,7 +20,7 @@
         mwlCalendarNextView
         [view]="view"
         [(viewDate)]="viewDate"
-        [excludeDays]="excludeDays">
+        (viewDateChange)="skipWeekends('forward')">
         Next
       </div>
     </div>

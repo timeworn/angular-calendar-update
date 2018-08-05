@@ -20,32 +20,24 @@ import {
   CalendarMonthViewDay,
   DAYS_OF_WEEK,
   CalendarEventTimesChangedEvent,
-  CalendarMonthViewComponent,
-  DateAdapter,
-  CalendarMonthViewEventTimesChangedEvent
-} from '../src';
+  CalendarMonthViewComponent
+} from './../src';
 import { Subject } from 'rxjs';
 import { triggerDomEvent } from './util';
 import { take } from 'rxjs/operators';
-import { adapterFactory } from '../src/date-adapters/date-fns';
+import { CalendarMonthViewEventTimesChangedEvent } from '../src/modules/month';
 
 describe('calendarMonthView component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
-        CalendarModule.forRoot(
-          {
-            provide: DateAdapter,
-            useFactory: adapterFactory
-          },
-          {
-            dateFormatter: {
-              provide: CalendarDateFormatter,
-              useClass: CalendarMomentDateFormatter
-            }
+        CalendarModule.forRoot({
+          dateFormatter: {
+            provide: CalendarDateFormatter,
+            useClass: CalendarMomentDateFormatter
           }
-        )
+        })
       ],
       providers: [{ provide: MOMENT, useValue: moment }]
     });
@@ -291,11 +283,9 @@ describe('calendarMonthView component', () => {
     triggerDomEvent('mouseenter', event);
     fixture.detectChanges();
     expect(day.style.backgroundColor).to.equal('rgb(238, 238, 238)');
-    expect(day.classList.contains('cal-event-highlight')).to.be.true;
     triggerDomEvent('mouseleave', event);
     fixture.detectChanges();
     expect(day.style.backgroundColor).to.be.equal('');
-    expect(day.classList.contains('cal-event-highlight')).to.be.false;
   });
 
   it('should add event actions to the active day events', () => {
@@ -584,8 +574,7 @@ describe('calendarMonthView component', () => {
     });
     fixture.detectChanges();
     expect(cells[10].classList.contains('cal-drag-over')).to.equal(true);
-    const ghostElement = event.nextSibling as HTMLElement;
-    const eventAfterDragPosition: ClientRect = ghostElement.getBoundingClientRect();
+    const eventAfterDragPosition: ClientRect = event.getBoundingClientRect();
     const movedLeft: number = dragToCellPosition.left - eventStartPosition.left;
     expect(eventAfterDragPosition.left).to.equal(
       eventStartPosition.left + movedLeft
@@ -601,7 +590,6 @@ describe('calendarMonthView component', () => {
     fixture.detectChanges();
     expect(cells[10].classList.contains('cal-drag-over')).to.equal(false);
     fixture.destroy();
-    expect(dragEvent.type).to.equal('drop');
     expect(dragEvent.event).to.equal(fixture.componentInstance.events[0]);
     expect(dragEvent.newStart).to.deep.equal(new Date(2016, 11, 7, 10, 39, 14));
     expect(dragEvent.newEnd).to.deep.equal(new Date(2016, 11, 7, 15, 11, 5));
@@ -657,7 +645,6 @@ describe('calendarMonthView component', () => {
     });
     fixture.detectChanges();
     fixture.destroy();
-    expect(dragEvent.type).to.equal('drop');
     expect(dragEvent.event).to.equal(fixture.componentInstance.events[0]);
     expect(dragEvent.newStart).to.deep.equal(new Date('2017-01-31'));
     expect(dragEvent.newEnd).to.deep.equal(undefined);
@@ -785,7 +772,7 @@ describe('calendarMonthView component', () => {
       beforeViewRenderCalled
     );
     fixture.componentInstance.refresh.next(true);
-    expect(beforeViewRenderCalled).to.have.been.calledOnce;
+    expect(beforeViewRenderCalled).to.have.callCount(1);
     subscription.unsubscribe();
     fixture.destroy();
   });
@@ -816,11 +803,11 @@ describe('calendarMonthView component', () => {
     fixture.componentInstance.viewDate = new Date('2016-06-27');
     fixture.componentInstance.ngOnChanges({ viewDate: {} });
     expect(
-      beforeViewRenderCalled.getCall(0).args[0].period.start
-    ).to.be.an.instanceOf(Date);
+      beforeViewRenderCalled.getCall(0).args[0].period.start instanceof Date
+    ).to.equal(true);
     expect(
-      beforeViewRenderCalled.getCall(0).args[0].period.end
-    ).to.be.an.instanceOf(Date);
+      beforeViewRenderCalled.getCall(0).args[0].period.end instanceof Date
+    ).to.equal(true);
     expect(
       Array.isArray(beforeViewRenderCalled.getCall(0).args[0].period.events)
     ).to.equal(true);

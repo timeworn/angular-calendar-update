@@ -7,10 +7,7 @@ export class CalendarResizeHelper {
   ) {}
 
   validateResize({ rectangle }: { rectangle: ClientRect }): boolean {
-    if (
-      this.minWidth &&
-      Math.ceil(rectangle.width) < Math.ceil(this.minWidth)
-    ) {
+    if (this.minWidth && rectangle.width < this.minWidth) {
       return false;
     }
 

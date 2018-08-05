@@ -6,7 +6,6 @@ import {
   TemplateRef
 } from '@angular/core';
 import { DayViewEvent } from 'calendar-utils';
-import { PlacementArray } from 'positioning';
 
 @Component({
   selector: 'mwl-calendar-day-view-event',
@@ -26,14 +25,14 @@ import { PlacementArray } from 'positioning';
         [tooltipPlacement]="tooltipPlacement"
         [tooltipEvent]="dayEvent.event"
         [tooltipTemplate]="tooltipTemplate"
-        [tooltipAppendToBody]="tooltipAppendToBody"
-        (mwlClick)="eventClicked.emit()">
+        [tooltipAppendToBody]="tooltipAppendToBody">
         <mwl-calendar-event-actions [event]="dayEvent.event"></mwl-calendar-event-actions>
         &ngsp;
         <mwl-calendar-event-title
           [event]="dayEvent.event"
           [customTemplate]="eventTitleTemplate"
-          view="day">
+          view="day"
+          (mwlClick)="eventClicked.emit()">
         </mwl-calendar-event-title>
       </div>
     </ng-template>
@@ -50,24 +49,17 @@ import { PlacementArray } from 'positioning';
   `
 })
 export class CalendarDayViewEventComponent {
-  @Input()
-  dayEvent: DayViewEvent;
+  @Input() dayEvent: DayViewEvent;
 
-  @Input()
-  tooltipPlacement: PlacementArray;
+  @Input() tooltipPlacement: string;
 
-  @Input()
-  tooltipAppendToBody: boolean;
+  @Input() tooltipAppendToBody: boolean;
 
-  @Input()
-  customTemplate: TemplateRef<any>;
+  @Input() customTemplate: TemplateRef<any>;
 
-  @Input()
-  eventTitleTemplate: TemplateRef<any>;
+  @Input() eventTitleTemplate: TemplateRef<any>;
 
-  @Input()
-  tooltipTemplate: TemplateRef<any>;
+  @Input() tooltipTemplate: TemplateRef<any>;
 
-  @Output()
-  eventClicked: EventEmitter<any> = new EventEmitter();
+  @Output() eventClicked: EventEmitter<any> = new EventEmitter();
 }

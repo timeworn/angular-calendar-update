@@ -5,8 +5,7 @@ import {
   EventEmitter,
   TemplateRef
 } from '@angular/core';
-import { WeekViewAllDayEvent, DayViewEvent } from 'calendar-utils';
-import { PlacementArray } from 'positioning';
+import { WeekViewEvent } from 'calendar-utils';
 
 @Component({
   selector: 'mwl-calendar-week-view-event',
@@ -17,24 +16,23 @@ import { PlacementArray } from 'positioning';
       let-tooltipPlacement="tooltipPlacement"
       let-eventClicked="eventClicked"
       let-tooltipTemplate="tooltipTemplate"
-      let-tooltipAppendToBody="tooltipAppendToBody"
-      let-tooltipDisabled="tooltipDisabled">
+      let-tooltipAppendToBody="tooltipAppendToBody">
       <div
         class="cal-event"
         [style.backgroundColor]="weekEvent.event.color?.secondary"
         [style.borderColor]="weekEvent.event.color?.primary"
-        [mwlCalendarTooltip]="!tooltipDisabled ? (weekEvent.event.title | calendarEventTitle:'weekTooltip':weekEvent.event) : ''"
+        [mwlCalendarTooltip]="weekEvent.event.title | calendarEventTitle:'weekTooltip':weekEvent.event"
         [tooltipPlacement]="tooltipPlacement"
         [tooltipEvent]="weekEvent.event"
         [tooltipTemplate]="tooltipTemplate"
-        [tooltipAppendToBody]="tooltipAppendToBody"
-        (mwlClick)="eventClicked.emit()">
+        [tooltipAppendToBody]="tooltipAppendToBody">
         <mwl-calendar-event-actions [event]="weekEvent.event"></mwl-calendar-event-actions>
         &ngsp;
         <mwl-calendar-event-title
           [event]="weekEvent.event"
           [customTemplate]="eventTitleTemplate"
-          view="week">
+          view="week"
+          (mwlClick)="eventClicked.emit()">
         </mwl-calendar-event-title>
       </div>
     </ng-template>
@@ -45,34 +43,23 @@ import { PlacementArray } from 'positioning';
         tooltipPlacement: tooltipPlacement,
         eventClicked: eventClicked,
         tooltipTemplate: tooltipTemplate,
-        tooltipAppendToBody: tooltipAppendToBody,
-        tooltipDisabled: tooltipDisabled
+        tooltipAppendToBody: tooltipAppendToBody
       }">
     </ng-template>
   `
 })
 export class CalendarWeekViewEventComponent {
-  @Input()
-  weekEvent: WeekViewAllDayEvent | DayViewEvent;
+  @Input() weekEvent: WeekViewEvent;
 
-  @Input()
-  tooltipPlacement: PlacementArray;
+  @Input() tooltipPlacement: string;
 
-  @Input()
-  tooltipAppendToBody: boolean;
+  @Input() tooltipAppendToBody: boolean;
 
-  @Input()
-  tooltipDisabled: boolean;
+  @Input() customTemplate: TemplateRef<any>;
 
-  @Input()
-  customTemplate: TemplateRef<any>;
+  @Input() eventTitleTemplate: TemplateRef<any>;
 
-  @Input()
-  eventTitleTemplate: TemplateRef<any>;
+  @Input() tooltipTemplate: TemplateRef<any>;
 
-  @Input()
-  tooltipTemplate: TemplateRef<any>;
-
-  @Output()
-  eventClicked: EventEmitter<any> = new EventEmitter();
+  @Output() eventClicked: EventEmitter<any> = new EventEmitter();
 }

@@ -8,10 +8,11 @@ import { CalendarEvent } from 'calendar-utils';
       #defaultTemplate
       let-event="event"
       let-view="view">
-      <span
+      <a
         class="cal-event-title"
+        href="javascript:;"
         [innerHTML]="event.title | calendarEventTitle:view:event">
-      </span>
+      </a>
     </ng-template>
     <ng-template
       [ngTemplateOutlet]="customTemplate || defaultTemplate"
@@ -23,12 +24,9 @@ import { CalendarEvent } from 'calendar-utils';
   `
 })
 export class CalendarEventTitleComponent {
-  @Input()
-  event: CalendarEvent;
+  @Input() event: CalendarEvent;
 
-  @Input()
-  customTemplate: TemplateRef<any>;
+  @Input() customTemplate: TemplateRef<any>;
 
-  @Input()
-  view: string;
+  @Input() view: string;
 }

@@ -1,8 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   CalendarEvent,
-  CalendarEventTimesChangedEvent,
-  CalendarView
+  CalendarEventTimesChangedEvent
 } from 'angular-calendar';
 import { Subject } from 'rxjs';
 import { colors } from '../demo-utils/colors';
@@ -10,26 +9,12 @@ import { colors } from '../demo-utils/colors';
 @Component({
   selector: 'mwl-demo-component',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: 'template.html',
-  styles: [
-    `
-      .drag-active {
-        position: relative;
-        z-index: 1;
-        pointer-events: none;
-      }
-      .drag-over {
-        background-color: #eee;
-      }
-    `
-  ]
+  templateUrl: 'template.html'
 })
 export class DemoComponent {
-  CalendarView = CalendarView;
+  view: string = 'month';
 
-  view = CalendarView.Month;
-
-  viewDate = new Date();
+  viewDate: Date = new Date();
 
   externalEvents: CalendarEvent[] = [
     {
@@ -48,20 +33,16 @@ export class DemoComponent {
 
   events: CalendarEvent[] = [];
 
-  activeDayIsOpen = false;
+  activeDayIsOpen: boolean = false;
 
-  refresh = new Subject<void>();
+  refresh: Subject<any> = new Subject();
 
   eventDropped({
     event,
     newStart,
-    newEnd,
-    allDay
+    newEnd
   }: CalendarEventTimesChangedEvent): void {
-    const externalIndex = this.externalEvents.indexOf(event);
-    if (typeof allDay !== 'undefined') {
-      event.allDay = allDay;
-    }
+    const externalIndex: number = this.externalEvents.indexOf(event);
     if (externalIndex > -1) {
       this.externalEvents.splice(externalIndex, 1);
       this.events.push(event);
@@ -70,17 +51,7 @@ export class DemoComponent {
     if (newEnd) {
       event.end = newEnd;
     }
-    if (this.view === 'month') {
-      this.viewDate = newStart;
-      this.activeDayIsOpen = true;
-    }
-    this.events = [...this.events];
-  }
-
-  externalDrop(event: CalendarEvent) {
-    if (this.externalEvents.indexOf(event) === -1) {
-      this.events = this.events.filter(iEvent => iEvent !== event);
-      this.externalEvents.push(event);
-    }
+    this.viewDate = newStart;
+    this.activeDayIsOpen = true;
   }
 }

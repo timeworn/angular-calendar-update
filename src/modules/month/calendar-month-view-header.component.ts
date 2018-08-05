@@ -29,14 +29,11 @@ import { trackByWeekDayHeaderDate } from '../common/util';
   `
 })
 export class CalendarMonthViewHeaderComponent {
-  @Input()
-  days: WeekDay[];
+  @Input() days: WeekDay[];
 
-  @Input()
-  locale: string;
+  @Input() locale: string;
 
-  @Input()
-  customTemplate: TemplateRef<any>;
+  @Input() customTemplate: TemplateRef<any>;
 
   trackByWeekDayHeaderDate = trackByWeekDayHeaderDate;
 }

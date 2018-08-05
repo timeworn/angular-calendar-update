@@ -7,8 +7,7 @@ import { DayViewHourSegment } from 'calendar-utils';
     <ng-template
       #defaultTemplate
       let-segment="segment"
-      let-locale="locale"
-      let-segmentHeight="segmentHeight">
+      let-locale="locale">
       <div
         class="cal-hour-segment"
         [style.height.px]="segmentHeight"
@@ -24,22 +23,17 @@ import { DayViewHourSegment } from 'calendar-utils';
       [ngTemplateOutlet]="customTemplate || defaultTemplate"
       [ngTemplateOutletContext]="{
         segment: segment,
-        locale: locale,
-        segmentHeight: segmentHeight
+        locale: locale
       }">
     </ng-template>
   `
 })
 export class CalendarDayViewHourSegmentComponent {
-  @Input()
-  segment: DayViewHourSegment;
+  @Input() segment: DayViewHourSegment;
 
-  @Input()
-  segmentHeight: number;
+  @Input() segmentHeight: number;
 
-  @Input()
-  locale: string;
+  @Input() locale: string;
 
-  @Input()
-  customTemplate: TemplateRef<any>;
+  @Input() customTemplate: TemplateRef<any>;
 }
