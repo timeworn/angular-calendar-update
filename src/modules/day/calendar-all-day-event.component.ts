@@ -17,14 +17,14 @@ import { CalendarEvent } from 'calendar-utils';
       <div
         class="cal-all-day-event"
         [style.backgroundColor]="event.color?.secondary"
-        [style.borderColor]="event.color?.primary">
+        [style.borderColor]="event.color?.primary"
+        (mwlClick)="eventClicked.emit()">
         <mwl-calendar-event-actions [event]="event"></mwl-calendar-event-actions>
         &ngsp;
         <mwl-calendar-event-title
           [event]="event"
           [customTemplate]="eventTitleTemplate"
-          view="day"
-          (mwlClick)="eventClicked.emit()">
+          view="day">
         </mwl-calendar-event-title>
       </div>
     </ng-template>
@@ -38,11 +38,15 @@ import { CalendarEvent } from 'calendar-utils';
   `
 })
 export class CalendarAllDayEventComponent {
-  @Input() event: CalendarEvent;
+  @Input()
+  event: CalendarEvent;
 
-  @Input() customTemplate: TemplateRef<any>;
+  @Input()
+  customTemplate: TemplateRef<any>;
 
-  @Input() eventTitleTemplate: TemplateRef<any>;
+  @Input()
+  eventTitleTemplate: TemplateRef<any>;
 
-  @Output() eventClicked: EventEmitter<any> = new EventEmitter();
+  @Output()
+  eventClicked: EventEmitter<any> = new EventEmitter();
 }

@@ -19,7 +19,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap/modal/modal.module';
 import {
   CalendarEvent,
   CalendarEventAction,
-  CalendarEventTimesChangedEvent
+  CalendarEventTimesChangedEvent,
+  CalendarView
 } from 'angular-calendar';
 
 const colors: any = {
@@ -44,9 +45,12 @@ const colors: any = {
   templateUrl: 'template.html'
 })
 export class DemoComponent {
-  @ViewChild('modalContent') modalContent: TemplateRef<any>;
+  @ViewChild('modalContent')
+  modalContent: TemplateRef<any>;
 
-  view: string = 'month';
+  view: CalendarView = CalendarView.Month;
+
+  CalendarView = CalendarView;
 
   viewDate: Date = new Date();
 
@@ -79,7 +83,13 @@ export class DemoComponent {
       end: addDays(new Date(), 1),
       title: 'A 3 day event',
       color: colors.red,
-      actions: this.actions
+      actions: this.actions,
+      allDay: true,
+      resizable: {
+        beforeStart: true,
+        afterEnd: true
+      },
+      draggable: true
     },
     {
       start: startOfDay(new Date()),
@@ -91,7 +101,8 @@ export class DemoComponent {
       start: subDays(endOfMonth(new Date()), 3),
       end: addDays(endOfMonth(new Date()), 3),
       title: 'A long event that spans 2 months',
-      color: colors.blue
+      color: colors.blue,
+      allDay: true
     },
     {
       start: addHours(startOfDay(new Date()), 2),
