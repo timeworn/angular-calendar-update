@@ -2,7 +2,7 @@ import {
   CalendarDateFormatterInterface,
   DateFormatterParams
 } from './calendar-date-formatter.interface';
-import { formatDate } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { DateAdapter } from '../../date-adapters/date-adapter';
 import { getWeekViewPeriod } from './util';
@@ -13,34 +13,34 @@ import { getWeekViewPeriod } from './util';
 @Injectable()
 export class CalendarAngularDateFormatter
   implements CalendarDateFormatterInterface {
-  constructor(protected dateAdapter: DateAdapter) {}
+  constructor(private dateAdapter: DateAdapter) {}
 
   /**
    * The month view header week day labels
    */
   public monthViewColumnHeader({ date, locale }: DateFormatterParams): string {
-    return formatDate(date, 'EEEE', locale);
+    return new DatePipe(locale).transform(date, 'EEEE', null, locale);
   }
 
   /**
    * The month view cell day number
    */
   public monthViewDayNumber({ date, locale }: DateFormatterParams): string {
-    return formatDate(date, 'd', locale);
+    return new DatePipe(locale).transform(date, 'd', null, locale);
   }
 
   /**
    * The month view title
    */
   public monthViewTitle({ date, locale }: DateFormatterParams): string {
-    return formatDate(date, 'LLLL y', locale);
+    return new DatePipe(locale).transform(date, 'MMMM y', null, locale);
   }
 
   /**
    * The week view header week day labels
    */
   public weekViewColumnHeader({ date, locale }: DateFormatterParams): string {
-    return formatDate(date, 'EEEE', locale);
+    return new DatePipe(locale).transform(date, 'EEEE', null, locale);
   }
 
   /**
@@ -50,7 +50,7 @@ export class CalendarAngularDateFormatter
     date,
     locale
   }: DateFormatterParams): string {
-    return formatDate(date, 'MMM d', locale);
+    return new DatePipe(locale).transform(date, 'MMM d', null, locale);
   }
 
   /**
@@ -71,7 +71,12 @@ export class CalendarAngularDateFormatter
       daysInWeek
     );
     const format = (dateToFormat: Date, showYear: boolean) =>
-      formatDate(dateToFormat, 'MMM d' + (showYear ? ', yyyy' : ''), locale);
+      new DatePipe(locale).transform(
+        dateToFormat,
+        'MMM d' + (showYear ? ', yyyy' : ''),
+        null,
+        locale
+      );
     return `${format(
       viewStart,
       viewStart.getUTCFullYear() !== viewEnd.getUTCFullYear()
@@ -82,20 +87,25 @@ export class CalendarAngularDateFormatter
    * The time formatting down the left hand side of the week view
    */
   public weekViewHour({ date, locale }: DateFormatterParams): string {
-    return formatDate(date, 'h a', locale);
+    return new DatePipe(locale).transform(date, 'h a', null, locale);
   }
 
   /**
    * The time formatting down the left hand side of the day view
    */
   public dayViewHour({ date, locale }: DateFormatterParams): string {
-    return formatDate(date, 'h a', locale);
+    return new DatePipe(locale).transform(date, 'h a', null, locale);
   }
 
   /**
    * The day view title
    */
   public dayViewTitle({ date, locale }: DateFormatterParams): string {
-    return formatDate(date, 'EEEE, MMMM d, y', locale);
+    return new DatePipe(locale).transform(
+      date,
+      'EEEE, MMMM d, y',
+      null,
+      locale
+    );
   }
 }

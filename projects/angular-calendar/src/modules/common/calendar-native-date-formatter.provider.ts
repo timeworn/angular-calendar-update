@@ -14,7 +14,7 @@ import { getWeekViewPeriod } from './util';
 @Injectable()
 export class CalendarNativeDateFormatter
   implements CalendarDateFormatterInterface {
-  constructor(protected dateAdapter: DateAdapter) {}
+  constructor(private dateAdapter: DateAdapter) {}
 
   /**
    * The month view header week day labels
