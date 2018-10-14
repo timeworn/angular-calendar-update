@@ -21,8 +21,7 @@ import {
   WeekViewHourColumn,
   DayViewEvent,
   DayViewHourSegment,
-  DayViewHour,
-  WeekViewAllDayEventRow
+  DayViewHour
 } from 'calendar-utils';
 import { ResizeEvent } from 'angular-resizable-element';
 import { CalendarDragHelper } from '../common/calendar-drag-helper.provider';
@@ -34,6 +33,7 @@ import {
 import { CalendarUtils } from '../common/calendar-utils.provider';
 import {
   validateEvents,
+  trackByIndex,
   roundToNearest,
   trackByWeekDayHeaderDate,
   trackByHourSegment,
@@ -107,7 +107,7 @@ export interface CalendarWeekViewBeforeRenderEvent extends WeekView {
           </div>
         </div>
         <div
-          *ngFor="let eventRow of view.allDayEventRows; trackBy:trackById"
+          *ngFor="let eventRow of view.allDayEventRows; trackBy:trackByIndex"
           #eventRowContainer
           class="cal-events-row">
           <div
@@ -536,6 +536,11 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
   /**
    * @hidden
    */
+  trackByIndex = trackByIndex;
+
+  /**
+   * @hidden
+   */
   trackByWeekDayHeaderDate = trackByWeekDayHeaderDate;
 
   /**
@@ -558,11 +563,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    */
   trackByHourColumn = (index: number, column: WeekViewHourColumn) =>
     column.hours[0] ? column.hours[0].segments[0].date.toISOString() : column;
-
-  /**
-   * @hidden
-   */
-  trackById = (index: number, row: WeekViewAllDayEventRow) => row.id;
 
   /**
    * @hidden
