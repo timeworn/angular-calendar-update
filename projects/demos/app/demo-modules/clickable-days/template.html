@@ -6,6 +6,9 @@
   <strong *ngIf="clickedDate"
     >You clicked on this day: {{ clickedDate | date:'medium' }}</strong
   >
+  <strong *ngIf="clickedColumn != null"
+    >You clicked on this column: {{ clickedColumn }}</strong
+  >
 </div>
 
 <div [ngSwitch]="view">
@@ -13,6 +16,7 @@
     *ngSwitchCase="'month'"
     [viewDate]="viewDate"
     [events]="events"
+    (columnHeaderClicked)="clickedColumn = $event"
     (dayClicked)="clickedDate = $event.day.date"
   >
   </mwl-calendar-month-view>

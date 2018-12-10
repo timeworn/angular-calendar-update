@@ -1,4 +1,10 @@
-import { Component, Input, TemplateRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  TemplateRef,
+  EventEmitter,
+  Output
+} from '@angular/core';
 import { WeekDay } from 'calendar-utils';
 import { trackByWeekDayHeaderDate } from '../common/util';
 
@@ -14,6 +20,7 @@ import { trackByWeekDayHeaderDate } from '../common/util';
           [class.cal-today]="day.isToday"
           [class.cal-future]="day.isFuture"
           [class.cal-weekend]="day.isWeekend"
+          (click)="columnHeaderClicked.emit(day.day)"
           [ngClass]="day.cssClass"
         >
           {{ day.date | calendarDate: 'monthViewColumnHeader':locale }}
@@ -33,6 +40,8 @@ export class CalendarMonthViewHeaderComponent {
   @Input() locale: string;
 
   @Input() customTemplate: TemplateRef<any>;
+
+  @Output() columnHeaderClicked = new EventEmitter<number>();
 
   trackByWeekDayHeaderDate = trackByWeekDayHeaderDate;
 }
