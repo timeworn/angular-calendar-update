@@ -58,8 +58,10 @@ export interface CalendarMonthViewEventTimesChangedEvent<
       <mwl-calendar-month-view-header
         [days]="columnHeaders"
         [locale]="locale"
+        (columnHeaderClicked)="columnHeaderClicked.emit($event)"
         [customTemplate]="headerTemplate"
       >
+        >
       </mwl-calendar-month-view-header>
       <div class="cal-days">
         <div *ngFor="let rowIndex of view.rowOffsets; trackByIndex">
@@ -222,6 +224,11 @@ export class CalendarMonthViewComponent
   eventClicked = new EventEmitter<{
     event: CalendarEvent;
   }>();
+
+  /**
+   * Called when a header week day is clicked. Returns ISO day number.
+   */
+  @Output() columnHeaderClicked = new EventEmitter<number>();
 
   /**
    * Called when an event is dragged and dropped
