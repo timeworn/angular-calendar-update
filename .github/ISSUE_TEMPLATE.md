@@ -1,3 +1,1 @@
-The issue tracker is for bug reports and feature requests only!
-
-To file support issues, please consider becoming a Silver level sponsor on Patreon: https://www.patreon.com/mattlewis92
+The issue tracker is for bug reports and feature requests only, please do not submit a support request here, instead ask on https://stackoverflow.com/ with a clear description of the problem you are experiencing

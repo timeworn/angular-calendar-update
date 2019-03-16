@@ -1,6 +1,7 @@
 ---
 name: "\U0001F41BBug report"
-about: Please search Github for a similar issue or PR before submitting
+about: Please search github for a similar issue or PR before submitting
+
 ---
 
 <!---

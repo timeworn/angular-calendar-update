@@ -1,16 +1,19 @@
 import { Component, Input, TemplateRef } from '@angular/core';
-import { CalendarEvent } from 'calendar-utils';
-import { trackByIndex } from './util';
+import { CalendarEvent, EventAction } from 'calendar-utils';
 
 @Component({
   selector: 'mwl-calendar-event-actions',
   template: `
-    <ng-template #defaultTemplate let-event="event">
+    <ng-template
+      #defaultTemplate
+      let-event="event"
+      let-trackByActionId="trackByActionId"
+    >
       <span *ngIf="event.actions" class="cal-event-actions">
         <a
           class="cal-event-action"
           href="javascript:;"
-          *ngFor="let action of event.actions; trackBy: trackByIndex"
+          *ngFor="let action of event.actions; trackBy: trackByActionId"
           (mwlClick)="action.onClick({ event: event })"
           [ngClass]="action.cssClass"
           [innerHtml]="action.label"
@@ -21,7 +24,8 @@ import { trackByIndex } from './util';
     <ng-template
       [ngTemplateOutlet]="customTemplate || defaultTemplate"
       [ngTemplateOutletContext]="{
-        event: event
+        event: event,
+        trackByActionId: trackByActionId
       }"
     >
     </ng-template>
@@ -32,5 +36,6 @@ export class CalendarEventActionsComponent {
 
   @Input() customTemplate: TemplateRef<any>;
 
-  trackByIndex = trackByIndex;
+  trackByActionId = (index: number, action: EventAction) =>
+    action.id ? action.id : event;
 }
