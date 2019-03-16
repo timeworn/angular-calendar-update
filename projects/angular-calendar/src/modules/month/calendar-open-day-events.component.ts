@@ -34,7 +34,6 @@ export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
       let-events="events"
       let-eventClicked="eventClicked"
       let-isOpen="isOpen"
-      let-trackByEventId="trackByEventId"
     >
       <div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
         <div
@@ -73,8 +72,7 @@ export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
       [ngTemplateOutletContext]="{
         events: events,
         eventClicked: eventClicked,
-        isOpen: isOpen,
-        trackByEventId: trackByEventId
+        isOpen: isOpen
       }"
     >
     </ng-template>
