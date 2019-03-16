@@ -17,8 +17,6 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { PlacementArray, positionElements } from 'positioning';
 import { CalendarEvent } from 'calendar-utils';
-import { Observable, of, Subject, timer } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'mwl-calendar-tooltip-window',
@@ -69,11 +67,8 @@ export class CalendarTooltipDirective implements OnDestroy {
 
   @Input('tooltipAppendToBody') appendToBody: boolean; // tslint:disable-line no-input-rename
 
-  @Input('tooltipDelay') delay: number | null = null; // tslint:disable-line no-input-rename
-
   private tooltipFactory: ComponentFactory<CalendarTooltipWindowComponent>;
   private tooltipRef: ComponentRef<CalendarTooltipWindowComponent>;
-  private cancelTooltipDelay$ = new Subject();
 
   constructor(
     private elementRef: ElementRef,
@@ -94,11 +89,7 @@ export class CalendarTooltipDirective implements OnDestroy {
 
   @HostListener('mouseenter')
   onMouseOver(): void {
-    const delay$: Observable<any> =
-      this.delay === null ? of('now') : timer(this.delay);
-    delay$.pipe(takeUntil(this.cancelTooltipDelay$)).subscribe(() => {
-      this.show();
-    });
+    this.show();
   }
 
   @HostListener('mouseleave')
@@ -133,7 +124,6 @@ export class CalendarTooltipDirective implements OnDestroy {
       );
       this.tooltipRef = null;
     }
-    this.cancelTooltipDelay$.next();
   }
 
   private positionTooltip(previousPosition?: string): void {
