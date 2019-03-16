@@ -3,8 +3,7 @@ import {
   ComponentFixture,
   TestBed,
   fakeAsync,
-  flush,
-  tick
+  flush
 } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import moment from 'moment';
@@ -76,21 +75,6 @@ describe('calendarMonthView component', () => {
       moment('2016-05-29').toDate()
     );
     fixture.destroy();
-  });
-
-  it('should emit on the columnHeaderClicked output', done => {
-    const fixture: ComponentFixture<
-      CalendarMonthViewComponent
-    > = TestBed.createComponent(CalendarMonthViewComponent);
-    fixture.componentInstance.viewDate = new Date('2016-06-29');
-    fixture.componentInstance.ngOnChanges({ viewDate: {} });
-    fixture.detectChanges();
-    fixture.componentInstance.columnHeaderClicked.subscribe(val => {
-      expect(val).to.equal(0);
-      done();
-    });
-    fixture.nativeElement.querySelector('.cal-header .cal-cell').click();
-    fixture.detectChanges();
   });
 
   it('should generate the week view with default colors for events', () => {
@@ -165,41 +149,6 @@ describe('calendarMonthView component', () => {
     expect(fixture.componentInstance.openRowIndex).to.equal(undefined);
     expect(fixture.componentInstance.openDay).to.equal(undefined);
     fixture.componentInstance.viewDate = moment()
-      .startOf('month')
-      .startOf('week')
-      .add(8, 'days')
-      .toDate();
-    fixture.componentInstance.activeDayIsOpen = true;
-    fixture.componentInstance.ngOnChanges({
-      viewDate: {},
-      activeDayIsOpen: {}
-    });
-    expect(fixture.componentInstance.openRowIndex).to.equal(7);
-    expect(fixture.componentInstance.openDay).to.equal(
-      fixture.componentInstance.view.days[8]
-    );
-    fixture.componentInstance.activeDayIsOpen = false;
-    fixture.componentInstance.ngOnChanges({
-      viewDate: {},
-      activeDayIsOpen: {}
-    });
-    expect(!!fixture.componentInstance.openRowIndex).to.equal(false);
-    expect(!!fixture.componentInstance.openDay).to.equal(false);
-    fixture.destroy();
-  });
-
-  it('should use the activeDay input instead of the viewDate to determine the active day', () => {
-    const fixture: ComponentFixture<
-      CalendarMonthViewComponent
-    > = TestBed.createComponent(CalendarMonthViewComponent);
-    expect(fixture.componentInstance.openRowIndex).to.equal(undefined);
-    expect(fixture.componentInstance.openDay).to.equal(undefined);
-    fixture.componentInstance.viewDate = moment()
-      .startOf('month')
-      .startOf('week')
-      .add(14, 'days')
-      .toDate();
-    fixture.componentInstance.activeDay = moment()
       .startOf('month')
       .startOf('week')
       .add(8, 'days')
@@ -528,47 +477,6 @@ describe('calendarMonthView component', () => {
     triggerDomEvent('mouseenter', event);
     fixture.detectChanges();
     flush();
-    const tooltip: HTMLElement = document.body.querySelector(
-      '.cal-tooltip'
-    ) as HTMLElement;
-    expect(tooltip.querySelector('.cal-tooltip-inner').innerHTML).to.equal(
-      'title: foo <b>bar</b>'
-    );
-    expect(tooltip.classList.contains('cal-tooltip-top')).to.equal(true);
-    expect(!!tooltip.style.top).to.equal(true);
-    expect(!!tooltip.style.left).to.equal(true);
-    triggerDomEvent('mouseleave', event);
-    fixture.detectChanges();
-    expect(!!document.body.querySelector('.cal-tooltip')).to.equal(false);
-  }));
-
-  it('should show a tooltip on mouseover of the event after a delay', fakeAsync(() => {
-    const fixture: ComponentFixture<
-      CalendarMonthViewComponent
-    > = TestBed.createComponent(CalendarMonthViewComponent);
-    eventTitle.monthTooltip = (e: CalendarEvent) => {
-      return `title: ${e.title}`;
-    };
-    fixture.componentInstance.viewDate = new Date('2016-06-27');
-    fixture.componentInstance.events = [
-      {
-        start: new Date('2016-05-30'),
-        end: new Date('2016-06-02'),
-        title: 'foo <b>bar</b>'
-      }
-    ];
-    fixture.componentInstance.tooltipDelay = 2000;
-    fixture.componentInstance.ngOnChanges({ viewDate: {}, events: {} });
-    fixture.detectChanges();
-    const event: HTMLElement = fixture.nativeElement.querySelector(
-      '.cal-days .cal-cell-row .cal-cell:nth-child(4) .cal-events .cal-event'
-    );
-    triggerDomEvent('mouseenter', event);
-    fixture.detectChanges();
-    tick(fixture.componentInstance.tooltipDelay - 1);
-    expect(!!document.body.querySelector('.cal-tooltip')).to.equal(false);
-    tick(1);
-    expect(!!document.body.querySelector('.cal-tooltip')).to.equal(true);
     const tooltip: HTMLElement = document.body.querySelector(
       '.cal-tooltip'
     ) as HTMLElement;
@@ -913,25 +821,6 @@ describe('calendarMonthView component', () => {
       beforeViewRenderCalled
     );
     fixture.componentInstance.refresh.next(true);
-    expect(beforeViewRenderCalled).to.have.been.calledOnce;
-    subscription.unsubscribe();
-    fixture.destroy();
-  });
-
-  it('should only call the beforeViewRender output once when changing the view date', () => {
-    const fixture: ComponentFixture<
-      CalendarMonthViewComponent
-    > = TestBed.createComponent(CalendarMonthViewComponent);
-    fixture.componentInstance.ngOnInit();
-    fixture.componentInstance.viewDate = new Date('2016-06-27');
-    fixture.componentInstance.ngOnChanges({ viewDate: {} });
-    const beforeViewRenderCalled = sinon.spy();
-    // use subscription to test that it was only called a max of one times
-    const subscription = fixture.componentInstance.beforeViewRender.subscribe(
-      beforeViewRenderCalled
-    );
-    fixture.componentInstance.viewDate = new Date('2016-06-28');
-    fixture.componentInstance.ngOnChanges({ viewDate: {} });
     expect(beforeViewRenderCalled).to.have.been.calledOnce;
     subscription.unsubscribe();
     fixture.destroy();

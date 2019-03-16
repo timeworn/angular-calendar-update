@@ -18,7 +18,6 @@ import { PlacementArray } from 'positioning';
       let-eventClicked="eventClicked"
       let-tooltipTemplate="tooltipTemplate"
       let-tooltipAppendToBody="tooltipAppendToBody"
-      let-tooltipDelay="tooltipDelay"
     >
       <div
         class="cal-event"
@@ -31,7 +30,6 @@ import { PlacementArray } from 'positioning';
         [tooltipEvent]="dayEvent.event"
         [tooltipTemplate]="tooltipTemplate"
         [tooltipAppendToBody]="tooltipAppendToBody"
-        [tooltipDelay]="tooltipDelay"
         (mwlClick)="eventClicked.emit()"
       >
         <mwl-calendar-event-actions
@@ -55,8 +53,7 @@ import { PlacementArray } from 'positioning';
         tooltipPlacement: tooltipPlacement,
         eventClicked: eventClicked,
         tooltipTemplate: tooltipTemplate,
-        tooltipAppendToBody: tooltipAppendToBody,
-        tooltipDelay: tooltipDelay
+        tooltipAppendToBody: tooltipAppendToBody
       }"
     >
     </ng-template>
@@ -76,8 +73,6 @@ export class CalendarDayViewEventComponent {
   @Input() eventActionsTemplate: TemplateRef<any>;
 
   @Input() tooltipTemplate: TemplateRef<any>;
-
-  @Input() tooltipDelay: number | null;
 
   @Output() eventClicked: EventEmitter<any> = new EventEmitter();
 }
