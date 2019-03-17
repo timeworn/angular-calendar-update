@@ -17,14 +17,14 @@ export const validateEvents = (events: CalendarEvent[]) => {
 
 export function isInside(outer: ClientRect, inner: ClientRect): boolean {
   return (
-    Math.ceil(outer.left) <= Math.ceil(inner.left) &&
-    Math.ceil(inner.left) <= Math.ceil(outer.right) &&
-    Math.ceil(outer.left) <= Math.ceil(inner.right) &&
-    Math.ceil(inner.right) <= Math.ceil(outer.right) &&
-    Math.ceil(outer.top) <= Math.ceil(inner.top) &&
-    Math.ceil(inner.top) <= Math.ceil(outer.bottom) &&
-    Math.ceil(outer.top) <= Math.ceil(inner.bottom) &&
-    Math.ceil(inner.bottom) <= Math.ceil(outer.bottom)
+    Math.floor(outer.left) <= Math.ceil(inner.left) &&
+    Math.floor(inner.left) <= Math.ceil(outer.right) &&
+    Math.floor(outer.left) <= Math.ceil(inner.right) &&
+    Math.floor(inner.right) <= Math.ceil(outer.right) &&
+    Math.floor(outer.top) <= Math.ceil(inner.top) &&
+    Math.floor(inner.top) <= Math.ceil(outer.bottom) &&
+    Math.floor(outer.top) <= Math.ceil(inner.bottom) &&
+    Math.floor(inner.bottom) <= Math.ceil(outer.bottom)
   );
 }
 
@@ -37,6 +37,8 @@ export const trackByEventId = (index: number, event: CalendarEvent) =>
 
 export const trackByWeekDayHeaderDate = (index: number, day: WeekDay) =>
   day.date.toISOString();
+
+export const trackByIndex = (index: number) => index;
 
 export const trackByHourSegment = (
   index: number,
