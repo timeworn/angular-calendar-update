@@ -21,8 +21,7 @@ import {
   WeekViewHourColumn,
   DayViewEvent,
   DayViewHourSegment,
-  DayViewHour,
-  WeekViewAllDayEventRow
+  DayViewHour
 } from 'calendar-utils';
 import { ResizeEvent } from 'angular-resizable-element';
 import { CalendarDragHelper } from '../common/calendar-drag-helper.provider';
@@ -34,6 +33,7 @@ import {
 import { CalendarUtils } from '../common/calendar-utils.provider';
 import {
   validateEvents,
+  trackByIndex,
   roundToNearest,
   trackByWeekDayHeaderDate,
   trackByHourSegment,
@@ -111,7 +111,7 @@ export interface CalendarWeekViewBeforeRenderEvent extends WeekView {
           ></div>
         </div>
         <div
-          *ngFor="let eventRow of view.allDayEventRows; trackBy: trackById"
+          *ngFor="let eventRow of view.allDayEventRows; trackBy: trackByIndex"
           #eventRowContainer
           class="cal-events-row"
         >
@@ -170,7 +170,6 @@ export interface CalendarWeekViewBeforeRenderEvent extends WeekView {
               [tooltipPlacement]="tooltipPlacement"
               [tooltipTemplate]="tooltipTemplate"
               [tooltipAppendToBody]="tooltipAppendToBody"
-              [tooltipDelay]="tooltipDelay"
               [customTemplate]="eventTemplate"
               [eventTitleTemplate]="eventTitleTemplate"
               [eventActionsTemplate]="eventActionsTemplate"
@@ -294,7 +293,6 @@ export interface CalendarWeekViewBeforeRenderEvent extends WeekView {
                 [tooltipTemplate]="tooltipTemplate"
                 [tooltipAppendToBody]="tooltipAppendToBody"
                 [tooltipDisabled]="dragActive || timeEventResizes.size > 0"
-                [tooltipDelay]="tooltipDelay"
                 [customTemplate]="eventTemplate"
                 [eventTitleTemplate]="eventTitleTemplate"
                 [eventActionsTemplate]="eventActionsTemplate"
@@ -391,12 +389,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    * Whether to append tooltips to the body or next to the trigger element
    */
   @Input() tooltipAppendToBody: boolean = true;
-
-  /**
-   * The delay in milliseconds before the tooltip should be displayed. If not provided the tooltip
-   * will be displayed immediately.
-   */
-  @Input() tooltipDelay: number | null = null;
 
   /**
    * The start number of the week
@@ -593,6 +585,11 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
   /**
    * @hidden
    */
+  trackByIndex = trackByIndex;
+
+  /**
+   * @hidden
+   */
   trackByWeekDayHeaderDate = trackByWeekDayHeaderDate;
 
   /**
@@ -615,11 +612,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    */
   trackByHourColumn = (index: number, column: WeekViewHourColumn) =>
     column.hours[0] ? column.hours[0].segments[0].date.toISOString() : column;
-
-  /**
-   * @hidden
-   */
-  trackById = (index: number, row: WeekViewAllDayEventRow) => row.id;
 
   /**
    * @hidden
@@ -649,14 +641,21 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
    * @hidden
    */
   ngOnChanges(changes: any): void {
-    const refreshHeader =
+    if (
       changes.viewDate ||
       changes.excludeDays ||
       changes.weekendDays ||
       changes.daysInWeek ||
-      changes.weekStartsOn;
+      changes.weekStartsOn
+    ) {
+      this.refreshHeader();
+    }
 
-    const refreshBody =
+    if (changes.events) {
+      validateEvents(this.events);
+    }
+
+    if (
       changes.viewDate ||
       changes.dayStartHour ||
       changes.dayStartMinute ||
@@ -668,22 +667,9 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
       changes.excludeDays ||
       changes.hourSegmentHeight ||
       changes.events ||
-      changes.daysInWeek;
-
-    if (refreshHeader) {
-      this.refreshHeader();
-    }
-
-    if (changes.events) {
-      validateEvents(this.events);
-    }
-
-    if (refreshBody) {
+      changes.daysInWeek
+    ) {
       this.refreshBody();
-    }
-
-    if (refreshHeader || refreshBody) {
-      this.emitBeforeViewRender();
     }
   }
 
@@ -827,19 +813,9 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
       let newStart: Date = allDayEvent.event.start;
       let newEnd: Date = allDayEvent.event.end || allDayEvent.event.start;
       if (allDayEventResizingBeforeStart) {
-        newStart = addDaysWithExclusions(
-          this.dateAdapter,
-          newStart,
-          daysDiff,
-          this.excludeDays
-        );
+        newStart = this.dateAdapter.addDays(newStart, daysDiff);
       } else {
-        newEnd = addDaysWithExclusions(
-          this.dateAdapter,
-          newEnd,
-          daysDiff,
-          this.excludeDays
-        );
+        newEnd = this.dateAdapter.addDays(newEnd, daysDiff);
       }
 
       this.eventTimesChanged.emit({
@@ -997,16 +973,17 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
         this.daysInWeek
       )
     });
+    this.emitBeforeViewRender();
   }
 
   private refreshBody(): void {
     this.view = this.getWeekView(this.events);
+    this.emitBeforeViewRender();
   }
 
   private refreshAll(): void {
     this.refreshHeader();
     this.refreshBody();
-    this.emitBeforeViewRender();
   }
 
   private emitBeforeViewRender(): void {
@@ -1064,23 +1041,13 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
       : 0;
 
     const start = this.dateAdapter.addMinutes(
-      addDaysWithExclusions(
-        this.dateAdapter,
-        weekEvent.event.start,
-        daysDragged,
-        this.excludeDays
-      ),
+      this.dateAdapter.addDays(weekEvent.event.start, daysDragged),
       minutesMoved
     );
     let end: Date;
     if (weekEvent.event.end) {
       end = this.dateAdapter.addMinutes(
-        addDaysWithExclusions(
-          this.dateAdapter,
-          weekEvent.event.end,
-          daysDragged,
-          this.excludeDays
-        ),
+        this.dateAdapter.addDays(weekEvent.event.end, daysDragged),
         minutesMoved
       );
     }
@@ -1162,12 +1129,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
       const daysDiff = Math.round(
         +resizeEvent.edges.left / this.dayColumnWidth
       );
-      const newStart = addDaysWithExclusions(
-        this.dateAdapter,
-        newEventDates.start,
-        daysDiff,
-        this.excludeDays
-      );
+      const newStart = this.dateAdapter.addDays(newEventDates.start, daysDiff);
       if (newStart < smallestResizes.start) {
         newEventDates.start = newStart;
       } else {
@@ -1177,12 +1139,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy {
       const daysDiff = Math.round(
         +resizeEvent.edges.right / this.dayColumnWidth
       );
-      const newEnd = addDaysWithExclusions(
-        this.dateAdapter,
-        newEventDates.end,
-        daysDiff,
-        this.excludeDays
-      );
+      const newEnd = this.dateAdapter.addDays(newEventDates.end, daysDiff);
       if (newEnd > smallestResizes.end) {
         newEventDates.end = newEnd;
       } else {

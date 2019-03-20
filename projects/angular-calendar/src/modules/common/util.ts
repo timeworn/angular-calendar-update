@@ -38,6 +38,8 @@ export const trackByEventId = (index: number, event: CalendarEvent) =>
 export const trackByWeekDayHeaderDate = (index: number, day: WeekDay) =>
   day.date.toISOString();
 
+export const trackByIndex = (index: number) => index;
+
 export const trackByHourSegment = (
   index: number,
   segment: DayViewHourSegment
