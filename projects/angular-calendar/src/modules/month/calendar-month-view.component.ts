@@ -24,7 +24,7 @@ import {
   CalendarEventTimesChangedEventType
 } from '../common/calendar-event-times-changed-event.interface';
 import { CalendarUtils } from '../common/calendar-utils.provider';
-import { validateEvents, trackByIndex } from '../common/util';
+import { validateEvents } from '../common/util';
 import { DateAdapter } from '../../date-adapters/date-adapter';
 import { PlacementArray } from 'positioning';
 
@@ -58,11 +58,15 @@ export interface CalendarMonthViewEventTimesChangedEvent<
       <mwl-calendar-month-view-header
         [days]="columnHeaders"
         [locale]="locale"
+        (columnHeaderClicked)="columnHeaderClicked.emit($event)"
         [customTemplate]="headerTemplate"
       >
+        >
       </mwl-calendar-month-view-header>
       <div class="cal-days">
-        <div *ngFor="let rowIndex of view.rowOffsets; trackByIndex">
+        <div
+          *ngFor="let rowIndex of view.rowOffsets; trackBy: trackByRowOffset"
+        >
           <div class="cal-cell-row">
             <mwl-calendar-month-cell
               *ngFor="
@@ -77,6 +81,7 @@ export interface CalendarMonthViewEventTimesChangedEvent<
               [tooltipPlacement]="tooltipPlacement"
               [tooltipAppendToBody]="tooltipAppendToBody"
               [tooltipTemplate]="tooltipTemplate"
+              [tooltipDelay]="tooltipDelay"
               [customTemplate]="cellTemplate"
               (mwlClick)="dayClicked.emit({ day: day })"
               (highlightDay)="toggleDayHighlight($event.event, true)"
@@ -141,6 +146,11 @@ export class CalendarMonthViewComponent
   @Input() activeDayIsOpen: boolean = false;
 
   /**
+   * If set will be used to determine the day that should be open. If not set, the `viewDate` is used
+   */
+  @Input() activeDay: Date;
+
+  /**
    * An observable that when emitted on will re-render the current view
    */
   @Input() refresh: Subject<any>;
@@ -164,6 +174,12 @@ export class CalendarMonthViewComponent
    * Whether to append tooltips to the body or next to the trigger element
    */
   @Input() tooltipAppendToBody: boolean = true;
+
+  /**
+   * The delay in milliseconds before the tooltip should be displayed. If not provided the tooltip
+   * will be displayed immediately.
+   */
+  @Input() tooltipDelay: number | null = null;
 
   /**
    * The start number of the week
@@ -224,6 +240,11 @@ export class CalendarMonthViewComponent
   }>();
 
   /**
+   * Called when a header week day is clicked. Returns ISO day number.
+   */
+  @Output() columnHeaderClicked = new EventEmitter<number>();
+
+  /**
    * Called when an event is dragged and dropped
    */
   @Output()
@@ -259,7 +280,11 @@ export class CalendarMonthViewComponent
   /**
    * @hidden
    */
-  trackByIndex = trackByIndex;
+  trackByRowOffset = (index: number, offset: number) =>
+    this.view.days
+      .slice(offset, this.view.totalDaysVisibleInWeek)
+      .map(day => day.date.toISOString())
+      .join('-');
 
   /**
    * @hidden
@@ -294,7 +319,15 @@ export class CalendarMonthViewComponent
    * @hidden
    */
   ngOnChanges(changes: any): void {
-    if (changes.viewDate || changes.excludeDays || changes.weekendDays) {
+    const refreshHeader =
+      changes.viewDate || changes.excludeDays || changes.weekendDays;
+    const refreshBody =
+      changes.viewDate ||
+      changes.events ||
+      changes.excludeDays ||
+      changes.weekendDays;
+
+    if (refreshHeader) {
       this.refreshHeader();
     }
 
@@ -302,20 +335,20 @@ export class CalendarMonthViewComponent
       validateEvents(this.events);
     }
 
-    if (
-      changes.viewDate ||
-      changes.events ||
-      changes.excludeDays ||
-      changes.weekendDays
-    ) {
+    if (refreshBody) {
       this.refreshBody();
+    }
+
+    if (refreshHeader || refreshBody) {
+      this.emitBeforeViewRender();
     }
 
     if (
       changes.activeDayIsOpen ||
       changes.viewDate ||
       changes.events ||
-      changes.excludeDays
+      changes.excludeDays ||
+      changes.activeDay
     ) {
       this.checkActiveDayIsOpen();
     }
@@ -388,7 +421,6 @@ export class CalendarMonthViewComponent
       excluded: this.excludeDays,
       weekendDays: this.weekendDays
     });
-    this.emitBeforeViewRender();
   }
 
   private refreshBody(): void {
@@ -399,13 +431,13 @@ export class CalendarMonthViewComponent
       excluded: this.excludeDays,
       weekendDays: this.weekendDays
     });
-    this.emitBeforeViewRender();
   }
 
   private checkActiveDayIsOpen(): void {
     if (this.activeDayIsOpen === true) {
+      const activeDay = this.activeDay || this.viewDate;
       this.openDay = this.view.days.find(day =>
-        this.dateAdapter.isSameDay(day.date, this.viewDate)
+        this.dateAdapter.isSameDay(day.date, activeDay)
       );
       const index: number = this.view.days.indexOf(this.openDay);
       this.openRowIndex =
@@ -418,10 +450,9 @@ export class CalendarMonthViewComponent
   }
 
   private refreshAll(): void {
-    this.columnHeaders = null;
-    this.view = null;
     this.refreshHeader();
     this.refreshBody();
+    this.emitBeforeViewRender();
     this.checkActiveDayIsOpen();
   }
 

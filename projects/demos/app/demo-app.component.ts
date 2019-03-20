@@ -18,6 +18,7 @@ interface Demo {
   label: string;
   path: string;
   sources?: Source[];
+  darkTheme: boolean;
   tags: string[];
 }
 
@@ -100,15 +101,18 @@ export class DemoAppComponent implements OnInit {
       .filter(route => route.path !== '**')
       .map(route => ({
         path: route.path,
-        tags: route.data.tags || [],
-        label: route.data.label
+        label: route.data.label,
+        darkTheme: route.data.darkTheme,
+        tags: route.data.tags || []
       }));
     this.updateFilteredDemos();
 
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .pipe(take(1))
-      .subscribe(() => (this.firstDemoLoaded = true));
+      .subscribe(() => {
+        this.firstDemoLoaded = true;
+      });
 
     this.router.events
       .pipe(filter(event => event instanceof NavigationStart))

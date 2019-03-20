@@ -294,6 +294,14 @@ import { FormsModule } from '@angular/forms';
           }
         },
         {
+          path: 'dark-theme',
+          loadChildren: './demo-modules/dark-theme/module#DemoModule',
+          data: {
+            label: 'Dark theme',
+            darkTheme: true
+          }
+        },
+        {
           path: '**',
           redirectTo: 'kitchen-sink'
         }
