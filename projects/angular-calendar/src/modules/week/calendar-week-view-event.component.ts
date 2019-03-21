@@ -19,7 +19,6 @@ import { PlacementArray } from 'positioning';
       let-tooltipTemplate="tooltipTemplate"
       let-tooltipAppendToBody="tooltipAppendToBody"
       let-tooltipDisabled="tooltipDisabled"
-      let-tooltipDelay="tooltipDelay"
     >
       <div
         class="cal-event"
@@ -35,7 +34,6 @@ import { PlacementArray } from 'positioning';
         [tooltipEvent]="weekEvent.event"
         [tooltipTemplate]="tooltipTemplate"
         [tooltipAppendToBody]="tooltipAppendToBody"
-        [tooltipDelay]="tooltipDelay"
         (mwlClick)="eventClicked.emit()"
       >
         <mwl-calendar-event-actions
@@ -60,8 +58,7 @@ import { PlacementArray } from 'positioning';
         eventClicked: eventClicked,
         tooltipTemplate: tooltipTemplate,
         tooltipAppendToBody: tooltipAppendToBody,
-        tooltipDisabled: tooltipDisabled,
-        tooltipDelay: tooltipDelay
+        tooltipDisabled: tooltipDisabled
       }"
     >
     </ng-template>
@@ -75,8 +72,6 @@ export class CalendarWeekViewEventComponent {
   @Input() tooltipAppendToBody: boolean;
 
   @Input() tooltipDisabled: boolean;
-
-  @Input() tooltipDelay: number | null;
 
   @Input() customTemplate: TemplateRef<any>;
 
