@@ -38,8 +38,6 @@ export const trackByEventId = (index: number, event: CalendarEvent) =>
 export const trackByWeekDayHeaderDate = (index: number, day: WeekDay) =>
   day.date.toISOString();
 
-export const trackByIndex = (index: number) => index;
-
 export const trackByHourSegment = (
   index: number,
   segment: DayViewHourSegment
@@ -74,7 +72,9 @@ export function getMinimumEventHeightInMinutes(
   hourSegments: number,
   hourSegmentHeight: number
 ) {
-  return (MINUTES_IN_HOUR / (hourSegments * hourSegmentHeight)) * 30;
+  return (
+    (MINUTES_IN_HOUR / (hourSegments * hourSegmentHeight)) * hourSegmentHeight
+  );
 }
 
 export function getDefaultEventEnd(
