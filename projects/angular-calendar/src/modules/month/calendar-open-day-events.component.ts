@@ -14,7 +14,7 @@ import {
   AnimationTriggerMetadata
 } from '@angular/animations';
 import { CalendarEvent } from 'calendar-utils';
-import { trackByEventId } from '../common/util';
+import { isWithinThreshold, trackByEventId } from '../common/util';
 
 export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
   state(
@@ -48,6 +48,7 @@ export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
       let-eventClicked="eventClicked"
       let-isOpen="isOpen"
       let-trackByEventId="trackByEventId"
+      let-validateDrag="validateDrag"
     >
       <div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
         <div
@@ -58,6 +59,7 @@ export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
           dragActiveClass="cal-drag-active"
           [dropData]="{ event: event }"
           [dragAxis]="{ x: event.draggable, y: event.draggable }"
+          [validateDrag]="validateDrag"
         >
           <span
             class="cal-event"
@@ -87,7 +89,8 @@ export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
         events: events,
         eventClicked: eventClicked,
         isOpen: isOpen,
-        trackByEventId: trackByEventId
+        trackByEventId: trackByEventId,
+        validateDrag: validateDrag
       }"
     >
     </ng-template>
@@ -111,4 +114,6 @@ export class CalendarOpenDayEventsComponent {
   }>();
 
   trackByEventId = trackByEventId;
+
+  validateDrag = isWithinThreshold;
 }
