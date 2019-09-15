@@ -2,14 +2,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Injectable,
   ViewEncapsulation
 } from '@angular/core';
-import {
-  CalendarEvent,
-  CalendarEventTitleFormatter,
-  CalendarView
-} from 'angular-calendar';
-import { DayViewHourSegment } from 'calendar-utils';
+import { CalendarEvent, CalendarEventTitleFormatter } from 'angular-calendar';
+import { WeekViewHourSegment } from 'calendar-utils';
 import { fromEvent } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { addDays, addMinutes, endOfWeek } from 'date-fns';
@@ -22,6 +19,7 @@ function ceilToNearest(amount: number, precision: number) {
   return Math.ceil(amount / precision) * precision;
 }
 
+@Injectable()
 export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
   weekTooltip(event: CalendarEvent, title: string) {
     if (!event.meta.tmpEvent) {
@@ -66,7 +64,7 @@ export class DemoComponent {
   constructor(private cdr: ChangeDetectorRef) {}
 
   startDragToCreate(
-    segment: DayViewHourSegment,
+    segment: WeekViewHourSegment,
     mouseDownEvent: MouseEvent,
     segmentElement: HTMLElement
   ) {
