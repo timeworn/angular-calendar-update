@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CalendarEvent, CalendarView } from 'angular-calendar';
+import { CalendarEvent } from 'angular-calendar';
 import { setHours, setMinutes } from 'date-fns';
 import { colors } from '../demo-utils/colors';
 
@@ -9,7 +9,7 @@ import { colors } from '../demo-utils/colors';
   templateUrl: 'template.html'
 })
 export class DemoComponent {
-  view: CalendarView = CalendarView.Day;
+  view: string = 'day';
 
   viewDate: Date = new Date();
 

@@ -2,8 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import {
   CalendarEvent,
-  CalendarEventTimesChangedEvent,
-  CalendarView
+  CalendarEventTimesChangedEvent
 } from 'angular-calendar';
 import { colors } from '../demo-utils/colors';
 
@@ -13,7 +12,7 @@ import { colors } from '../demo-utils/colors';
   templateUrl: 'template.html'
 })
 export class DemoComponent {
-  view: CalendarView = CalendarView.Month;
+  view: string = 'month';
 
   viewDate: Date = new Date();
 

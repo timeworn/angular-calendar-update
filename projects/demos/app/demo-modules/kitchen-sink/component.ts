@@ -61,14 +61,12 @@ export class DemoComponent {
   actions: CalendarEventAction[] = [
     {
       label: '<i class="fa fa-fw fa-pencil"></i>',
-      a11yLabel: 'Edit',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.handleEvent('Edited', event);
       }
     },
     {
       label: '<i class="fa fa-fw fa-times"></i>',
-      a11yLabel: 'Delete',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.events = this.events.filter(iEvent => iEvent !== event);
         this.handleEvent('Deleted', event);
@@ -107,7 +105,7 @@ export class DemoComponent {
     },
     {
       start: addHours(startOfDay(new Date()), 2),
-      end: addHours(new Date(), 2),
+      end: new Date(),
       title: 'A draggable and resizable event',
       color: colors.yellow,
       actions: this.actions,

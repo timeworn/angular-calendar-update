@@ -54,13 +54,14 @@ export interface CalendarMonthViewEventTimesChangedEvent<
 @Component({
   selector: 'mwl-calendar-month-view',
   template: `
-    <div class="cal-month-view" role="grid">
+    <div class="cal-month-view">
       <mwl-calendar-month-view-header
         [days]="columnHeaders"
         [locale]="locale"
         (columnHeaderClicked)="columnHeaderClicked.emit($event)"
         [customTemplate]="headerTemplate"
       >
+        >
       </mwl-calendar-month-view-header>
       <div class="cal-days">
         <div
@@ -83,11 +84,8 @@ export interface CalendarMonthViewEventTimesChangedEvent<
               [tooltipDelay]="tooltipDelay"
               [customTemplate]="cellTemplate"
               [ngStyle]="{ backgroundColor: day.backgroundColor }"
-              (mwlClick)="dayClicked.emit({ day: day, sourceEvent: $event })"
+              (mwlClick)="dayClicked.emit({ day: day })"
               [clickListenerDisabled]="dayClicked.observers.length === 0"
-              (mwlKeydownEnter)="
-                dayClicked.emit({ day: day, sourceEvent: $event })
-              "
               (highlightDay)="toggleDayHighlight($event.event, true)"
               (unhighlightDay)="toggleDayHighlight($event.event, false)"
               mwlDroppable
@@ -99,30 +97,17 @@ export interface CalendarMonthViewEventTimesChangedEvent<
                   $event.dropData.draggedFrom
                 )
               "
-              (eventClicked)="
-                eventClicked.emit({
-                  event: $event.event,
-                  sourceEvent: $event.sourceEvent
-                })
-              "
-              [attr.tabindex]="{} | calendarA11y: 'monthCellTabIndex'"
+              (eventClicked)="eventClicked.emit({ event: $event.event })"
             >
             </mwl-calendar-month-cell>
           </div>
           <mwl-calendar-open-day-events
-            [locale]="locale"
             [isOpen]="openRowIndex === rowIndex"
             [events]="openDay?.events"
-            [date]="openDay?.date"
             [customTemplate]="openDayEventsTemplate"
             [eventTitleTemplate]="eventTitleTemplate"
             [eventActionsTemplate]="eventActionsTemplate"
-            (eventClicked)="
-              eventClicked.emit({
-                event: $event.event,
-                sourceEvent: $event.sourceEvent
-              })
-            "
+            (eventClicked)="eventClicked.emit({ event: $event.event })"
             mwlDroppable
             dragOverClass="cal-drag-over"
             (drop)="
@@ -246,7 +231,6 @@ export class CalendarMonthViewComponent
   @Output()
   dayClicked = new EventEmitter<{
     day: MonthViewDay;
-    sourceEvent: MouseEvent | KeyboardEvent;
   }>();
 
   /**
@@ -255,16 +239,12 @@ export class CalendarMonthViewComponent
   @Output()
   eventClicked = new EventEmitter<{
     event: CalendarEvent;
-    sourceEvent: MouseEvent | KeyboardEvent;
   }>();
 
   /**
    * Called when a header week day is clicked. Returns ISO day number.
    */
-  @Output() columnHeaderClicked = new EventEmitter<{
-    isoDayNumber: number;
-    sourceEvent: MouseEvent | KeyboardEvent;
-  }>();
+  @Output() columnHeaderClicked = new EventEmitter<number>();
 
   /**
    * Called when an event is dragged and dropped

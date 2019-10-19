@@ -28,7 +28,7 @@ export class CalendarPreviousViewDirective {
   /**
    * The current view
    */
-  @Input() view: CalendarView | 'month' | 'week' | 'day';
+  @Input() view: CalendarView;
 
   /**
    * The current view date

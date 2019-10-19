@@ -16,7 +16,7 @@
     *ngSwitchCase="'month'"
     [viewDate]="viewDate"
     [events]="events"
-    (columnHeaderClicked)="clickedColumn = $event.isoDayNumber"
+    (columnHeaderClicked)="clickedColumn = $event"
     (dayClicked)="clickedDate = $event.day.date"
   >
   </mwl-calendar-month-view>

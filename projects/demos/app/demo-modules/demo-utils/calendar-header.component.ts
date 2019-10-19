@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CalendarView } from 'angular-calendar';
 
 @Component({
   selector: 'mwl-demo-utils-calendar-header',
@@ -68,7 +67,7 @@ import { CalendarView } from 'angular-calendar';
   `
 })
 export class CalendarHeaderComponent {
-  @Input() view: CalendarView | 'month' | 'week' | 'day';
+  @Input() view: string;
 
   @Input() viewDate: Date;
 
