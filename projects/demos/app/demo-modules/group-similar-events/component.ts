@@ -1,9 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import {
-  CalendarEvent,
-  CalendarMonthViewDay,
-  CalendarView
-} from 'angular-calendar';
+import { CalendarEvent, CalendarMonthViewDay } from 'angular-calendar';
 import { colors } from '../demo-utils/colors';
 import { isSameMinute, startOfDay } from 'date-fns';
 
@@ -28,7 +24,7 @@ interface EventGroupMeta {
   ]
 })
 export class DemoComponent implements OnInit {
-  view: CalendarView = CalendarView.Month;
+  view: string = 'month';
 
   viewDate: Date = new Date();
 

@@ -50,27 +50,7 @@ export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
       let-trackByEventId="trackByEventId"
       let-validateDrag="validateDrag"
     >
-      <div
-        class="cal-open-day-events"
-        [@collapse]
-        *ngIf="isOpen"
-        role="application"
-      >
-        <span
-          tabindex="-1"
-          role="alert"
-          [attr.aria-label]="
-            { date: date, locale: locale } | calendarA11y: 'openDayEventsAlert'
-          "
-        ></span>
-        <span
-          tabindex="0"
-          role="landmark"
-          [attr.aria-label]="
-            { date: date, locale: locale }
-              | calendarA11y: 'openDayEventsLandmark'
-          "
-        ></span>
+      <div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
         <div
           *ngFor="let event of events; trackBy: trackByEventId"
           [ngClass]="event?.cssClass"
@@ -91,17 +71,7 @@ export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
             [event]="event"
             [customTemplate]="eventTitleTemplate"
             view="month"
-            (mwlClick)="
-              eventClicked.emit({ event: event, sourceEvent: $event })
-            "
-            (mwlKeydownEnter)="
-              eventClicked.emit({ event: event, sourceEvent: $event })
-            "
-            tabindex="0"
-            [attr.aria-label]="
-              { event: event, locale: locale }
-                | calendarA11y: 'eventDescription'
-            "
+            (mwlClick)="eventClicked.emit({ event: event })"
           >
           </mwl-calendar-event-title>
           &ngsp;
@@ -128,8 +98,6 @@ export const collapseAnimation: AnimationTriggerMetadata = trigger('collapse', [
   animations: [collapseAnimation]
 })
 export class CalendarOpenDayEventsComponent {
-  @Input() locale: string;
-
   @Input() isOpen: boolean = false;
 
   @Input() events: CalendarEvent[];
@@ -140,12 +108,9 @@ export class CalendarOpenDayEventsComponent {
 
   @Input() eventActionsTemplate: TemplateRef<any>;
 
-  @Input() date: Date;
-
   @Output()
-  eventClicked = new EventEmitter<{
+  eventClicked: EventEmitter<{ event: CalendarEvent }> = new EventEmitter<{
     event: CalendarEvent;
-    sourceEvent: MouseEvent | KeyboardEvent;
   }>();
 
   trackByEventId = trackByEventId;

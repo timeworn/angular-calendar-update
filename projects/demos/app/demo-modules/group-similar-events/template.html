@@ -52,7 +52,7 @@
           borderColor: weekEvent.event.color?.primary
         }"
     [mwlCalendarTooltip]="
-          !tooltipDisabled && !weekEvent.event.meta.groupedEvents
+          !tooltipDisabled
             ? (weekEvent.event.title
               | calendarEventTitle: 'weekTooltip':weekEvent.event)
             : ''
@@ -95,7 +95,6 @@
     *ngSwitchCase="'day'"
     [viewDate]="viewDate"
     [events]="groupedSimilarEvents"
-    [eventTemplate]="customEventTemplate"
   >
   </mwl-calendar-day-view>
 </div>

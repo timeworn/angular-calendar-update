@@ -27,18 +27,10 @@ A calendar component for Angular 6.0+ that can display events on a month, week o
 
 ## Getting started
 
-### ng add (recommended)
-
-```sh
-ng add angular-calendar
-```
-
-### Manual setup (ng add will do this all for you)
-
 First install through npm:
 
 ```bash
-npm install --save angular-calendar date-fns
+npm install --save angular-calendar date-fns@1.30.1
 ```
 
 Next include the CSS file in the global (not component scoped) styles of your app:
@@ -72,7 +64,7 @@ In order to allow the most flexibility for all users there is a substantial amou
 
 Once you are up and running, to access a full list of options for each component, the individual APIs are documented here: [`mwl-calendar-month-view`](https://mattlewis92.github.io/angular-calendar/docs/components/CalendarMonthViewComponent.html), [`mwl-calendar-week-view`](https://mattlewis92.github.io/angular-calendar/docs/components/CalendarWeekViewComponent.html) and [`mwl-calendar-day-view`](https://mattlewis92.github.io/angular-calendar/docs/components/CalendarDayViewComponent.html).
 
-If you would like a one on one consultation with me where I can show you the best way to integrate and customise this calendar within your application, then you can get this by becoming a Platinum Sponsor on [GitHub](https://github.com/users/mattlewis92/sponsorship).
+If you would like a one on one consulation with me where I can show you the best way to integrate and customise this calendar within your application, then you can get this by becoming a Platinum Sponsor on [GitHub](https://github.com/users/mattlewis92/sponsorship).
 
 ### Module bundlers
 
@@ -123,7 +115,7 @@ As there are so many events to show on each month, it doesn’t provide a lot of
 
 ### Does this calendar work with mobile?
 
-This library is not optimised for mobile. Due to the complex nature of a calendar component, it is non trivial to build a calendar that has a great UX on both desktop and mobile. It is recommended to build your own calendar component for mobile that has a dedicated UX. You may be able to get some degree of mobile support by setting some custom CSS rules for smaller screens, [including hammerjs](http://hammerjs.github.io/) and using a [custom hammerjs config](https://github.com/mattlewis92/angular-calendar/blob/master/projects/demos/app/hammer-config.ts) to allow scrolling on clickable elements.
+This library is not optimised for mobile. Due to the complex nature of a calendar component, it is non trivial to build a calendar that has a great UX on both desktop and mobile. It is recommended to build your own calendar component for mobile that has a dedicated UX. You may be able to get some degree of mobile support by setting some custom CSS rules for smaller screens on the month view and showing less days on the [week view](https://mattlewis92.github.io/angular-calendar/#/responsive-week-view).
 
 ### How do I use a custom template?
 

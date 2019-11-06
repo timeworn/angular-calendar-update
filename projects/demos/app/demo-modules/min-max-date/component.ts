@@ -3,11 +3,7 @@ import {
   ChangeDetectionStrategy,
   ViewEncapsulation
 } from '@angular/core';
-import {
-  CalendarEvent,
-  CalendarMonthViewDay,
-  CalendarView
-} from 'angular-calendar';
+import { CalendarEvent, CalendarMonthViewDay } from 'angular-calendar';
 import {
   subMonths,
   addMonths,
@@ -66,7 +62,7 @@ function endOfPeriod(period: CalendarPeriod, date: Date): Date {
   encapsulation: ViewEncapsulation.None
 })
 export class DemoComponent {
-  view: CalendarView | CalendarPeriod = CalendarView.Month;
+  view: CalendarPeriod = 'month';
 
   viewDate: Date = new Date();
 

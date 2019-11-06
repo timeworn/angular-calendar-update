@@ -1,15 +1,14 @@
 import { Component, Input, TemplateRef } from '@angular/core';
-import { WeekViewHourColumn } from 'calendar-utils';
+import { DayViewHourSegment } from 'calendar-utils';
 
 @Component({
-  selector: 'mwl-calendar-week-view-hour-segment',
+  selector: 'mwl-calendar-day-view-hour-segment',
   template: `
     <ng-template
       #defaultTemplate
       let-segment="segment"
       let-locale="locale"
       let-segmentHeight="segmentHeight"
-      let-isTimeLabel="isTimeLabel"
     >
       <div
         class="cal-hour-segment"
@@ -18,8 +17,8 @@ import { WeekViewHourColumn } from 'calendar-utils';
         [class.cal-after-hour-start]="!segment.isStart"
         [ngClass]="segment.cssClass"
       >
-        <div class="cal-time" *ngIf="isTimeLabel">
-          {{ segment.displayDate | calendarDate: 'weekViewHour':locale }}
+        <div class="cal-time">
+          {{ segment.displayDate | calendarDate: 'dayViewHour':locale }}
         </div>
       </div>
     </ng-template>
@@ -28,21 +27,18 @@ import { WeekViewHourColumn } from 'calendar-utils';
       [ngTemplateOutletContext]="{
         segment: segment,
         locale: locale,
-        segmentHeight: segmentHeight,
-        isTimeLabel: isTimeLabel
+        segmentHeight: segmentHeight
       }"
     >
     </ng-template>
   `
 })
-export class CalendarWeekViewHourSegmentComponent {
-  @Input() segment: WeekViewHourColumn;
+export class CalendarDayViewHourSegmentComponent {
+  @Input() segment: DayViewHourSegment;
 
   @Input() segmentHeight: number;
 
   @Input() locale: string;
-
-  @Input() isTimeLabel: boolean;
 
   @Input() customTemplate: TemplateRef<any>;
 }
