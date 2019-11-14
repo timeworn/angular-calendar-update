@@ -7,8 +7,7 @@ import {
   CalendarEvent,
   CalendarMonthViewBeforeRenderEvent,
   CalendarWeekViewBeforeRenderEvent,
-  CalendarDayViewBeforeRenderEvent,
-  CalendarView
+  CalendarDayViewBeforeRenderEvent
 } from 'angular-calendar';
 
 @Component({
@@ -25,7 +24,7 @@ import {
   ]
 })
 export class DemoComponent {
-  view: CalendarView = CalendarView.Month;
+  view: string = 'month';
 
   viewDate: Date = new Date();
 
@@ -57,13 +56,11 @@ export class DemoComponent {
   }
 
   beforeDayViewRender(renderEvent: CalendarDayViewBeforeRenderEvent) {
-    renderEvent.hourColumns.forEach(hourColumn => {
-      hourColumn.hours.forEach(hour => {
-        hour.segments.forEach(segment => {
-          if (segment.date.getHours() >= 2 && segment.date.getHours() <= 5) {
-            segment.cssClass = 'bg-pink';
-          }
-        });
+    renderEvent.body.hourGrid.forEach(hour => {
+      hour.segments.forEach((segment, index) => {
+        if (segment.date.getHours() >= 2 && segment.date.getHours() <= 5) {
+          segment.cssClass = 'bg-pink';
+        }
       });
     });
   }

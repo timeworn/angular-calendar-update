@@ -1,8 +1,8 @@
 import {
   CalendarEvent,
-  WeekViewTimeEvent,
-  WeekViewHour,
-  WeekViewHourSegment,
+  DayViewEvent,
+  DayViewHour,
+  DayViewHourSegment,
   validateEvents as validateEventsWithoutLog,
   ViewPeriod,
   WeekDay,
@@ -40,30 +40,18 @@ export const trackByWeekDayHeaderDate = (index: number, day: WeekDay) =>
 
 export const trackByHourSegment = (
   index: number,
-  segment: WeekViewHourSegment
+  segment: DayViewHourSegment
 ) => segment.date.toISOString();
 
-export const trackByHour = (index: number, hour: WeekViewHour) =>
+export const trackByHour = (index: number, hour: DayViewHour) =>
   hour.segments[0].date.toISOString();
 
-export const trackByWeekAllDayEvent = (
+export const trackByDayOrWeekEvent = (
   index: number,
-  weekEvent: WeekViewAllDayEvent
-) => (weekEvent.event.id ? weekEvent.event.id : weekEvent.event);
-
-export const trackByWeekTimeEvent = (
-  index: number,
-  weekEvent: WeekViewTimeEvent
+  weekEvent: WeekViewAllDayEvent | DayViewEvent
 ) => (weekEvent.event.id ? weekEvent.event.id : weekEvent.event);
 
 const MINUTES_IN_HOUR = 60;
-
-function getPixelAmountInMinutes(
-  hourSegments: number,
-  hourSegmentHeight: number
-) {
-  return MINUTES_IN_HOUR / (hourSegments * hourSegmentHeight);
-}
 
 export function getMinutesMoved(
   movedY: number,
@@ -75,10 +63,8 @@ export function getMinutesMoved(
     movedY,
     eventSnapSize || hourSegmentHeight
   );
-  const pixelAmountInMinutes = getPixelAmountInMinutes(
-    hourSegments,
-    hourSegmentHeight
-  );
+  const pixelAmountInMinutes =
+    MINUTES_IN_HOUR / (hourSegments * hourSegmentHeight);
   return draggedInPixelsSnapSize * pixelAmountInMinutes;
 }
 
@@ -87,7 +73,7 @@ export function getMinimumEventHeightInMinutes(
   hourSegmentHeight: number
 ) {
   return (
-    getPixelAmountInMinutes(hourSegments, hourSegmentHeight) * hourSegmentHeight
+    (MINUTES_IN_HOUR / (hourSegments * hourSegmentHeight)) * hourSegmentHeight
   );
 }
 

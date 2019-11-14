@@ -3,8 +3,7 @@ import { Subject } from 'rxjs';
 import { addDays } from 'date-fns';
 import {
   CalendarEvent,
-  CalendarEventTimesChangedEvent,
-  CalendarView
+  CalendarEventTimesChangedEvent
 } from 'angular-calendar';
 import { colors } from '../demo-utils/colors';
 
@@ -14,7 +13,7 @@ import { colors } from '../demo-utils/colors';
   templateUrl: 'template.html'
 })
 export class DemoComponent {
-  view: CalendarView = CalendarView.Week;
+  view: string = 'week';
 
   viewDate: Date = new Date();
 
